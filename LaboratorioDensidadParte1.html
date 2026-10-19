@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parte 1 · Experimento · Densidad</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p:#7c3aed;--pd:#5b21b6;--pl:#ede9fe;--g:#10b981;--gl:#d1fae5;--r:#ef4444;--rl:#fee2e2;--a:#f59e0b;--al:#fef3c7;--b:#3b82f6;--bl:#dbeafe;--gr:#eef2f7;--ink:#1f2937;--mut:#6b7280;--ln:#e5e7eb}
+body{font-family:'Segoe UI',system-ui,Arial,sans-serif;font-size:16px;line-height:1.5;color:var(--ink);background:var(--gr);-webkit-text-size-adjust:100%}
+h1,h2,h3{margin:0 0 .4em;line-height:1.25}
+p{margin:.3em 0}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--p);outline-offset:2px;border-radius:6px}
+.topbar{background:linear-gradient(135deg,var(--pd),var(--p));color:#fff;padding:14px 22px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;box-shadow:0 4px 14px rgba(16,24,40,.15)}
+.brand{display:flex;gap:14px;align-items:center}
+.logo{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:26px}
+.brand h1{font-size:1.05rem;margin:0}
+.brand .sub{font-size:.76rem;opacity:.92;margin:1px 0}
+.pill{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:5px 11px;border-radius:999px;font-size:.78rem;font-weight:600}
+.wrap{max-width:1500px;margin:0 auto;padding:18px}
+.card{background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(16,24,40,.08);padding:16px;border:1px solid var(--ln);margin-bottom:14px}
+.card h2{color:var(--pd);font-size:1.05rem;margin-bottom:8px}
+.hidden{display:none!important}
+.welcome{text-align:center;padding:36px 20px;max-width:820px;margin:40px auto}
+.welcome .ico{font-size:60px}
+.welcome h1{font-size:1.7rem;color:var(--pd);margin:10px 0}
+.welcome p{color:#4b5563;font-size:1rem}
+.steps{background:var(--pl);border-radius:14px;padding:18px 22px;text-align:left;margin:22px 0;font-size:.94rem}
+.steps ol{margin:.3em 0 0 1.2em}
+.steps li{margin:.45em 0}
+.btn-start{background:linear-gradient(135deg,var(--g),#059669);color:#fff;border:none;padding:18px 34px;border-radius:14px;font-size:1.1rem;font-weight:800;box-shadow:0 8px 24px rgba(16,185,129,.35);transition:.15s}
+.btn-start:hover{transform:translateY(-2px)}
+.layout{display:grid;grid-template-columns:minmax(340px,1fr) 1fr;gap:16px;align-items:start}
+@media(max-width:1000px){.layout{grid-template-columns:1fr}}
+.sim-col{position:sticky;top:16px}
+@media(max-width:1000px){.sim-col{position:static}}
+iframe#phet{width:100%;height:640px;border:2px solid var(--ln);border-radius:12px;background:#fff;display:block}
+@media(max-width:1000px){iframe#phet{height:480px}}
+@media(max-width:600px){iframe#phet{height:380px}}
+.sim-instruction{background:#fff;border:2px solid var(--b);border-radius:12px;padding:14px;margin-bottom:14px;display:flex;gap:12px;align-items:flex-start;box-shadow:0 2px 8px rgba(59,130,246,.15)}
+.sim-instruction .icon{font-size:32px;flex:0 0 auto;line-height:1}
+.sim-instruction .content{flex:1}
+.sim-instruction h3{color:#1e40af;margin:0 0 6px;font-size:1rem}
+.sim-instruction ol{margin:0;padding-left:20px;font-size:.9rem;color:#374151;font-weight:600}
+.sim-instruction li{margin-bottom:6px}
+.sim-instruction .highlight{background:#fef3c7;color:#92400e;padding:2px 6px;border-radius:4px;font-weight:800;border:1px solid #fcd34d}
+.sim-instruction ul.sub-step{margin:4px 0 0 14px;font-size:.86rem;font-weight:500;color:#4b5563;list-style:disc}
+.sim-instruction ul.sub-step li{margin-bottom:3px}
+.formula-box{background:linear-gradient(135deg,#fef3c7,#fde68a);border:2px solid #f59e0b;border-radius:10px;padding:12px 14px;margin:10px 0;text-align:center}
+.formula-box .title{font-size:.82rem;color:#92400e;font-weight:800;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.formula-box .formula{font-size:1.05rem;font-weight:900;color:#78350f;font-family:'Courier New',monospace;line-height:1.5}
+.formula-box .formula .op{color:#dc2626;padding:0 4px}
+.formula-box .hint{font-size:.78rem;color:#78350f;margin-top:6px;font-style:italic}
+.fld{display:block;font-weight:700;font-size:.82rem;margin:8px 0 4px;color:#374151}
+input[type=text],input[type=date],input[type=number],select,textarea{width:100%;padding:9px 12px;border:2px solid var(--ln);border-radius:10px;font-size:.95rem;font-family:inherit;background:#fff}
+input:focus,select:focus,textarea:focus{border-color:var(--p);outline:none;box-shadow:0 0 0 3px var(--pl)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+table.tbl{width:100%;border-collapse:collapse;margin:8px 0;font-size:.85rem}
+table.tbl th{background:var(--p);color:#fff;padding:7px 5px;text-align:left;font-size:.72rem;text-transform:uppercase}
+table.tbl td{border-bottom:1px solid var(--ln);padding:5px}
+table.tbl input,table.tbl select{padding:5px 7px;font-size:.85rem}
+.rho{font-weight:800;color:var(--pd);text-align:center}
+.mc{margin:12px 0;padding:11px 13px;background:#fafbfc;border-left:4px solid var(--p);border-radius:10px}
+.mc .q{font-weight:800;font-size:.9rem;margin-bottom:6px;color:#111827}
+.mc label{display:flex;gap:9px;align-items:flex-start;padding:6px 9px;border-radius:8px;cursor:pointer;font-size:.88rem;transition:.12s;margin:2px 0}
+.mc label:hover{background:var(--pl)}
+.mc input[type=radio]{margin-top:3px;accent-color:var(--p);width:17px;height:17px;flex:0 0 auto}
+.mc input[type=radio]:checked + span{font-weight:800;color:var(--pd)}
+.download-section{background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid var(--g);border-radius:14px;padding:20px;text-align:center;margin-top:20px}
+.download-section h3{color:#065f46;margin-bottom:6px}
+.download-section p{font-size:.86rem;color:#374151;margin-bottom:12px}
+.btn-download{background:linear-gradient(135deg,var(--g),#059669);color:#fff;border:none;padding:16px 28px;border-radius:12px;font-size:1.05rem;font-weight:800;box-shadow:0 6px 20px rgba(16,185,129,.4);width:100%;transition:.15s}
+.btn-download:hover{transform:translateY(-2px)}
+.btn-copy{background:#fff;border:2px solid var(--ln);color:var(--ink);padding:10px 18px;border-radius:10px;font-weight:700;margin-top:10px;width:100%;font-size:.9rem}
+.btn-copy:hover{background:#f9fafb}
+.btn-back{background:#fff;border:2px solid var(--ln);color:var(--ink);padding:10px 18px;border-radius:10px;font-weight:700;margin-top:10px;width:100%}
+.info{background:var(--bl);border-left:4px solid var(--b);padding:11px;border-radius:10px;font-size:.84rem;color:#1e40af;margin:10px 0}
+.alert{background:var(--rl);border-left:4px solid var(--r);padding:11px;border-radius:10px;font-size:.84rem;color:#991b1b;margin:10px 0}
+footer{background:#111827;color:#9ca3af;padding:18px;text-align:center;font-size:.78rem;margin-top:30px}
+footer strong{color:#fff}
+.code-box{background:#111827;color:#34d399;font-family:'Courier New',monospace;font-size:1.8rem;font-weight:900;letter-spacing:.14em;padding:16px;border-radius:12px;text-align:center;margin:14px 0;word-break:break-all}
+.email-box{background:#fff;border:2px dashed var(--p);border-radius:10px;padding:12px;margin:10px 0;font-size:1rem;color:var(--pd);font-weight:800;text-align:center}
+.btn-clean{background:#ef4444; color:#fff; border:none; padding:8px 14px; border-radius:8px; font-weight:800; font-size:.82rem; cursor:pointer; transition:.15s;}
+.btn-clean:hover{background:#dc2626}
+.btn-aparte{background:#3b82f6; color:#fff; border:none; padding:10px 18px; border-radius:8px; font-weight:700; font-size:.9rem; cursor:pointer; margin-bottom:10px; width:100%;}
+.btn-aparte:hover{background:#2563eb;}
+@media print{.topbar,.no-print,footer,iframe,.btn-start,.btn-download,.btn-back,.sim-instruction,.btn-clean,.btn-aparte{display:none!important}body{background:#fff}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">🧪</div>
+    <div>
+      <h1>Parte 1 · Experimento · Flotar o Hundirse</h1>
+      <p class="sub">Colegio Colombo Americano CAS · Bogotá, Colombia</p>
+      <p class="sub">Física 6 · Grado Sexto · Cambridge 9Pf.01 · Prof. Gustavo Ramírez · Jhonny García</p>
+    </div>
+  </div>
+  <span class="pill">📊 80 / 100 pts · Opción múltiple</span>
+</header>
+
+<!-- ===== INSTRUCCIONES ===== -->
+<main id="viewInstructions">
+  <div class="card welcome">
+    <div class="ico">🌊⚖️🔬</div>
+    <h1>¡Bienvenidos al laboratorio de densidad!</h1>
+    <p>Hoy van a descubrir <strong>por qué unas cosas flotan y otras se hunden</strong>. Trabajarán <strong>en parejas o tríos</strong>.</p>
+    
+    <div class="alert" style="text-align:left;margin-bottom:18px;background:#eff6ff;border-color:#3b82f6;color:#1e40af;">
+      <strong>📱 ¿Estás en iPad o Tablet?</strong><br>
+      Para que todo funcione perfecto, <strong>abre este archivo en Safari o Chrome</strong> (no en la app de Archivos). Si el simulador no carga, usa el botón azul <strong>"Abrir simulador aparte"</strong>.
+    </div>
+
+    <div class="steps">
+      <strong>📋 INSTRUCCIONES PASO A PASO</strong>
+      <ol>
+        <li><strong>PASO 1 · Datos:</strong> Escriban sus nombres, elijan su curso (6A, 6B o 6C) y su docente.</li>
+        <li><strong>PASO 2 · Módulo 1:</strong> En el simulador, hagan clic en <strong>"COMPARAR"</strong> y luego en <strong>"Misma masa"</strong>. Midan masa y volumen de cada bloque. Respondan A1, A2 y A3.</li>
+        <li><strong>PASO 3 · Módulo 2:</strong> En el simulador, sigan en <strong>"COMPARAR"</strong> y hagan clic en <strong>"Mismo volumen"</strong>. Midan sus bloques y respondan B1, B2 y B3.</li>
+        <li><strong>PASO 4 · Módulo 3:</strong> En el simulador, hagan clic en <strong>"MISTERIO"</strong>. Midan los 5 bloques, usen la tabla de materiales y respondan C1, C2 y C3.</li>
+        <li><strong>PASO 5 · Análisis:</strong> Respondan las preguntas D1 a D7.</li>
+        <li><strong>PASO 6 · Terminar:</strong> Hagan clic en <strong>"💾 Guardar y terminar la Parte 1"</strong>.</li>
+        <li><strong>PASO 7 · Descargar:</strong> Descarguen su archivo de respaldo (o copien el texto) y guárdenlo bien.</li>
+      </ol>
+    </div>
+
+    <div class="info" style="text-align:left;max-width:640px;margin:0 auto 18px">
+      📐 <strong>¿Cómo medir el volumen de un bloque?</strong><br>
+      Usa el <strong>método de desplazamiento de agua</strong>:
+      <div class="formula-box" style="margin-top:10px">
+        <div class="title">Fórmula</div>
+        <div class="formula">V<sub>bloque</sub> <span class="op">=</span> V<sub>final</sub> <span class="op">−</span> V<sub>inicial</sub></div>
+        <div class="hint">Volumen final (con el bloque sumergido) menos Volumen inicial (solo agua)</div>
+      </div>
+    </div>
+
+    <div class="alert" style="text-align:left;max-width:640px;margin:0 auto 18px;background:#fef3c7;border-color:#f59e0b;color:#92400e;">
+      <strong>⚠️ IMPORTANTE SOBRE LOS DÍAS:</strong><br>
+      Hoy haremos solo la <strong>Parte 1</strong>. La <strong>Parte 2 (Análisis)</strong> la haremos la <strong>PRÓXIMA CLASE</strong>. Por eso es vital que descargues tu respaldo y lo guardes bien.
+    </div>
+    
+    <button class="btn-start" id="btnStart">🚀 Comenzar el experimento</button>
+  </div>
+</main>
+
+<!-- ===== TRABAJO ===== -->
+<main id="viewWork" class="wrap hidden">
+  <div class="layout">
+    <aside class="sim-col">
+      <div class="card" style="padding:12px">
+        <button class="btn-aparte" id="btnAbrirSimulador">
+          🔗 Abrir simulador aparte (si no carga aquí)
+        </button>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-weight:800;font-size:.88rem;flex-wrap:wrap;gap:6px">
+          <span>🔬 Simulador PhET · Densidad</span>
+        </div>
+        <iframe
+          id="phet"
+          src="https://phet.colorado.edu/sims/html/density/latest/density_all.html?locale=es"
+          title="Simulador PhET"
+          width="100%"
+          height="640"
+          scrolling="no"
+          style="border:2px solid var(--ln); border-radius:12px; background:#fff; display:block;">
+        </iframe>
+      </div>
+    </aside>
+
+    <form id="labForm" autocomplete="off">
+      <div class="card">
+        <h2>👥 Datos del grupo (Paso 1)</h2>
+        <div class="grid2">
+          <div><label class="fld" for="est1">Estudiante 1</label><input type="text" id="est1" placeholder="Ej: Ana Pérez"></div>
+          <div><label class="fld" for="est2">Estudiante 2</label><input type="text" id="est2" placeholder="Ej: Luis Gómez"></div>
+          <div><label class="fld" for="est3">Estudiante 3 (opcional)</label><input type="text" id="est3" placeholder="Ej: Carlos Ruiz"></div>
+          <div><label class="fld" for="curso">Curso</label>
+            <select id="curso"><option value="">— Elige —</option><option>6A</option><option>6B</option><option>6C</option></select></div>
+          <div><label class="fld" for="docente">Docente</label>
+            <select id="docente"><option value="">— Elige —</option><option>Gustavo Ramírez</option><option>Jhonny García</option></select></div>
+          <div><label class="fld" for="fecha">Fecha</label><input type="date" id="fecha"></div>
+          <div><label class="fld" for="codigo">Código</label><input type="text" id="codigo" readonly style="font-family:monospace;font-weight:800;color:var(--pd)"></div>
+        </div>
+        
+        <div style="margin-top: 14px; text-align: right; border-top: 1px dashed #e5e7eb; padding-top: 14px;">
+          <button type="button" id="btnNuevaPareja" class="btn-clean">
+            🔄 Limpiar y empezar nuevo grupo
+          </button>
+        </div>
+      </div>
+
+      <!-- MÓDULO 1 -->
+      <div class="card">
+        <h2>⚗️ Módulo 1 · Misma masa (Paso 2)</h2>
+        
+        <div class="sim-instruction">
+          <div class="icon">🖱️</div>
+          <div class="content">
+            <h3>¿Qué debes hacer en el simulador?</h3>
+            <ol>
+              <li>En la parte de abajo del simulador, haz clic en la pestaña <span class="highlight">COMPARAR</span>.</li>
+              <li>Arriba a la izquierda, haz clic en el botón <span class="highlight">Misma masa</span>.</li>
+              <li>Arrastra cada bloque a la balanza y anota la <strong>masa (kg)</strong>.</li>
+              <li>Para el <strong>volumen</strong>:
+                <ul class="sub-step">
+                  <li>Lee el <strong>volumen inicial</strong> del agua.</li>
+                  <li>Sumerge el bloque y lee el <strong>volumen final</strong>.</li>
+                  <li>Resta: <span class="highlight">V = V<sub>final</sub> − V<sub>inicial</sub></span></li>
+                </ul>
+              </li>
+              <li>Observa si flota o se hunde.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="formula-box">
+          <div class="title">📐 Fórmula del volumen</div>
+          <div class="formula">V<sub>bloque</sub> <span class="op">=</span> V<sub>final</sub> <span class="op">−</span> V<sub>inicial</sub></div>
+          <div class="hint">Ejemplo: agua en 30 L → sube a 35 L → el bloque tiene 5 L.</div>
+        </div>
+
+        <table class="tbl">
+          <thead><tr><th>Bloque</th><th>Masa (kg)</th><th>Volumen (L)</th><th>ρ = m/V</th><th>¿Flota o se hunde?</th></tr></thead>
+          <tbody>
+            <tr><td><strong>🟡 Amarillo</strong></td>
+              <td><input type="number" step="0.01" min="0" id="A_amarillo_m" name="A_amarillo_m" placeholder="kg" class="expA"></td>
+              <td><input type="number" step="0.01" min="0" id="A_amarillo_v" name="A_amarillo_v" placeholder="V final − V inicial" class="expA"></td>
+              <td class="rho" id="rhoA_amarillo">—</td>
+              <td><select id="A_amarillo_est" name="A_amarillo_est"><option value="">—</option><option value="flota">🟢 Flota</option><option value="hunde">🔴 Se hunde</option></select></td></tr>
+            <tr><td><strong>🟢 Verde</strong></td>
+              <td><input type="number" step="0.01" min="0" id="A_verde_m" name="A_verde_m" placeholder="kg" class="expA"></td>
+              <td><input type="number" step="0.01" min="0" id="A_verde_v" name="A_verde_v" placeholder="V final − V inicial" class="expA"></td>
+              <td class="rho" id="rhoA_verde">—</td>
+              <td><select id="A_verde_est" name="A_verde_est"><option value="">—</option><option value="flota">🟢 Flota</option><option value="hunde">🔴 Se hunde</option></select></td></tr>
+            <tr><td><strong>🔵 Azul</strong></td>
+              <td><input type="number" step="0.01" min="0" id="A_azul_m" name="A_azul_m" placeholder="kg" class="expA"></td>
+              <td><input type="number" step="0.01" min="0" id="A_azul_v" name="A_azul_v" placeholder="V final − V inicial" class="expA"></td>
+              <td class="rho" id="rhoA_azul">—</td>
+              <td><select id="A_azul_est" name="A_azul_est"><option value="">—</option><option value="flota">🟢 Flota</option><option value="hunde">🔴 Se hunde</option></select></td></tr>
+          </tbody>
+        </table>
+        <div id="mcA"></div>
+      </div>
+
+      <!-- MÓDULO 2 -->
+      <div class="card">
+        <h2>⚗️ Módulo 2 · Mismo volumen (Paso 3)</h2>
+
+        <div class="sim-instruction">
+          <div class="icon">🖱️</div>
+          <div class="content">
+            <h3>¿Qué debes hacer en el simulador?</h3>
+            <ol>
+              <li>Quédate en la pestaña <span class="highlight">COMPARAR</span> (la misma de antes).</li>
+              <li>Arriba a la izquierda, haz clic en el botón <span class="highlight">Mismo volumen</span>.</li>
+              <li>Anota la <strong>masa (kg)</strong> de cada bloque.</li>
+              <li>Para el <strong>volumen</strong>: lee V inicial, sumerge el bloque, lee V final, y resta: <span class="highlight">V = V<sub>final</sub> − V<sub>inicial</sub></span></li>
+              <li>Observa si flota o se hunde.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="formula-box">
+          <div class="title">📐 Fórmula del volumen</div>
+          <div class="formula">V<sub>bloque</sub> <span class="op">=</span> V<sub>final</sub> <span class="op">−</span> V<sub>inicial</sub></div>
+          <div class="hint">Los tres bloques de este experimento deberían dar el mismo volumen.</div>
+        </div>
+
+        <table class="tbl">
+          <thead><tr><th>Bloque</th><th>Masa (kg)</th><th>Volumen (L)</th><th>ρ = m/V</th><th>¿Flota o se hunde?</th></tr></thead>
+          <tbody>
+            <tr><td><strong>🟡 Amarillo</strong></td>
+              <td><input type="number" step="0.01" min="0" id="B_amarillo_m" name="B_amarillo_m" placeholder="kg" class="expB"></td>
+              <td><input type="number" step="0.01" min="0" id="B_amarillo_v" name="B_amarillo_v" placeholder="V final − V inicial" class="expB"></td>
+              <td class="rho" id="rhoB_amarillo">—</td>
+              <td><select id="B_amarillo_est" name="B_amarillo_est"><option value="">—</option><option value="flota">🟢 Flota</option><option value="hunde">🔴 Se hunde</option></select></td></tr>
+            <tr><td><strong>🟢 Verde</strong></td>
+              <td><input type="number" step="0.01" min="0" id="B_verde_m" name="B_verde_m" placeholder="kg" class="expB"></td>
+              <td><input type="number" step="0.01" min="0" id="B_verde_v" name="B_verde_v" placeholder="V final − V inicial" class="expB"></td>
+              <td class="rho" id="rhoB_verde">—</td>
+              <td><select id="B_verde_est" name="B_verde_est"><option value="">—</option><option value="flota">🟢 Flota</option><option value="hunde">🔴 Se hunde</option></select></td></tr>
+            <tr><td><strong>🔵 Azul</strong></td>
+              <td><input type="number" step="0.01" min="0" id="B_azul_m" name="B_azul_m" placeholder="kg" class="expB"></td>
+              <td><input type="number" step="0.01" min="0" id="B_azul_v" name="B_azul_v" placeholder="V final − V inicial" class="expB"></td>
+              <td class="rho" id="rhoB_azul">—</td>
+              <td><select id="B_azul_est" name="B_azul_est"><option value="">—</option><option value="flota">🟢 Flota</option><option value="hunde">🔴 Se hunde</option></select></td></tr>
+          </tbody>
+        </table>
+        <div id="mcB"></div>
+      </div>
+
+      <!-- MÓDULO 3 -->
+      <div class="card">
+        <h2>🕵️ Módulo 3 · Bloques misteriosos (Paso 4)</h2>
+
+        <div class="sim-instruction">
+          <div class="icon">🖱️</div>
+          <div class="content">
+            <h3>¿Qué debes hacer en el simulador?</h3>
+            <ol>
+              <li>En la parte de abajo del simulador, haz clic en la pestaña <span class="highlight">MISTERIO</span>.</li>
+              <li>En la esquina superior derecha, selecciona el <span class="highlight">Grupo 1</span>.</li>
+              <li>Verás 5 bloques (1A, 1B, 1C, 1D, 1E). Arrastra cada uno a la balanza y anota su <strong>masa (kg)</strong>.</li>
+              <li>Para el <strong>volumen</strong>: lee V inicial, sumerge el bloque, lee V final, y resta: <span class="highlight">V = V<sub>final</sub> − V<sub>inicial</sub></span>.</li>
+              <li>Haz clic en el botón verde <strong>"Tabla de Densidades"</strong> (arriba a la izquierda) para descubrir el material de cada bloque.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="formula-box">
+          <div class="title">📐 Fórmula del volumen</div>
+          <div class="formula">V<sub>bloque</sub> <span class="op">=</span> V<sub>final</sub> <span class="op">−</span> V<sub>inicial</sub></div>
+          <div class="hint">Con la masa y el volumen, calcula ρ = m/V y búscala en la tabla.</div>
+        </div>
+
+        <div class="info" style="font-size:.78rem">
+          <strong>Tabla de Densidades Exacta de PhET:</strong><br>
+          Espuma 0,05 · Madera 0,40 · Hielo 0,92 · Agua 1,00 · Glicerina 1,26 · Vidrio 2,50 · Aluminio 2,70 · Hierro 7,90 · Plomo 11,30 · Oro 19,30
+        </div>
+        <table class="tbl">
+          <thead><tr><th>Bloque</th><th>Masa (kg)</th><th>Volumen (L)</th><th>ρ = m/V</th><th>Material</th></tr></thead>
+          <tbody>
+            <tr><td><strong>📦 M1</strong></td>
+              <td><input type="number" step="0.01" min="0" id="M1_m" name="M1_m" placeholder="kg" class="expM"></td>
+              <td><input type="number" step="0.01" min="0" id="M1_v" name="M1_v" placeholder="V final − V inicial" class="expM"></td>
+              <td class="rho" id="rhoM1">—</td>
+              <td><input type="text" id="M1_mat" name="M1_mat" placeholder="Ej: Hierro"></td></tr>
+            <tr><td><strong>📦 M2</strong></td>
+              <td><input type="number" step="0.01" min="0" id="M2_m" name="M2_m" placeholder="kg" class="expM"></td>
+              <td><input type="number" step="0.01" min="0" id="M2_v" name="M2_v" placeholder="V final − V inicial" class="expM"></td>
+              <td class="rho" id="rhoM2">—</td>
+              <td><input type="text" id="M2_mat" name="M2_mat" placeholder="Ej: Madera"></td></tr>
+            <tr><td><strong>📦 M3</strong></td>
+              <td><input type="number" step="0.01" min="0" id="M3_m" name="M3_m" placeholder="kg" class="expM"></td>
+              <td><input type="number" step="0.01" min="0" id="M3_v" name="M3_v" placeholder="V final − V inicial" class="expM"></td>
+              <td class="rho" id="rhoM3">—</td>
+              <td><input type="text" id="M3_mat" name="M3_mat" placeholder="Ej: Aluminio"></td></tr>
+            <tr><td><strong>📦 M4</strong></td>
+              <td><input type="number" step="0.01" min="0" id="M4_m" name="M4_m" placeholder="kg" class="expM"></td>
+              <td><input type="number" step="0.01" min="0" id="M4_v" name="M4_v" placeholder="V final − V inicial" class="expM"></td>
+              <td class="rho" id="rhoM4">—</td>
+              <td><input type="text" id="M4_mat" name="M4_mat" placeholder="Ej: Glicerina"></td></tr>
+            <tr><td><strong>📦 M5</strong></td>
+              <td><input type="number" step="0.01" min="0" id="M5_m" name="M5_m" placeholder="kg" class="expM"></td>
+              <td><input type="number" step="0.01" min="0" id="M5_v" name="M5_v" placeholder="V final − V inicial" class="expM"></td>
+              <td class="rho" id="rhoM5">—</td>
+              <td><input type="text" id="M5_mat" name="M5_mat" placeholder="Ej: Plomo"></td></tr>
+          </tbody>
+        </table>
+        <div id="mcC"></div>
+      </div>
+
+      <div class="card">
+        <h2>🧮 Análisis · Opción múltiple (Paso 5)</h2>
+        <div id="mcAnalysis"></div>
+      </div>
+
+      <div class="download-section">
+        <h3>✅ ¿Terminaste el experimento?</h3>
+        <p>Cuando hayas respondido <strong>todas</strong> las preguntas, guarda tu trabajo.</p>
+        <button type="button" class="btn-download" id="btnContinue">💾 Guardar y terminar la Parte 1</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+<!-- ===== FIN (PASO 6 Y 7) ===== -->
+<main id="viewDone" class="hidden">
+  <div class="card" style="text-align:center;padding:40px 24px;max-width:720px;margin:40px auto">
+    <div style="font-size:60px">✅</div>
+    <h1 style="color:var(--pd)">¡Parte 1 completada!</h1>
+    <p style="margin:14px 0;font-size:1.1rem">Este es el <strong>código de tu grupo</strong>:</p>
+    <div class="code-box" id="codigoShow">—</div>
+
+    <div style="background:#fef3c7;border-left:5px solid var(--a);border-radius:12px;padding:16px;text-align:left;margin:18px 0">
+      <h3 style="color:#92400e;margin-bottom:8px;font-size:1.1rem">📥 PASO 7 · Descarga tu respaldo</h3>
+      <p style="font-size:.92rem;color:#374151;margin-bottom:10px">
+        Haz clic en el botón verde. Se descargará un archivo con tus datos.
+      </p>
+      <button class="btn-download" id="btnDownloadBackup" style="font-size:1rem;padding:14px 20px">
+        ⬇️ Descargar respaldo de la Parte 1
+      </button>
+      <button class="btn-copy" id="btnCopyBackup">
+        📋 O copiar el texto para enviarlo por correo
+      </button>
+    </div>
+
+    <div style="background:#eff6ff;border-left:5px solid var(--b);border-radius:12px;padding:16px;text-align:left;margin:18px 0">
+      <h3 style="color:#1e40af;margin-bottom:8px;font-size:1.1rem">📧 ¿A qué correo lo envío?</h3>
+      <p style="font-size:.92rem;color:#374151;margin-bottom:10px">
+        Envía el archivo descargado a tu profesor, según tu curso:
+      </p>
+      <div class="email-box" id="emailDestino">
+        Selecciona tu curso en el Paso 1 para saber el correo.
+      </div>
+      <p style="font-size:.85rem;color:#6b7280">Asunto del correo: <strong>Laboratorio Densidad - [Tus Nombres] - [Código]</strong></p>
+    </div>
+
+    <div style="background:#e0e7ff;border-left:5px solid #4f46e5;border-radius:12px;padding:16px;text-align:left;margin:18px 0">
+      <h3 style="color:#3730a3;margin-bottom:8px;font-size:1.1rem">⏭️ ¿Qué sigue? (La Parte 2 es la PRÓXIMA CLASE)</h3>
+      <p style="font-size:.95rem;color:#374151;margin-bottom:10px">
+        <strong>¡Guarda tu archivo y tu código!</strong><br>
+        La próxima clase abrirás un archivo llamado <strong>LaboratorioDensidadParte2.html</strong> y subirás el respaldo que acabas de descargar.
+      </p>
+      <ul style="font-size:.9rem;color:#374151;margin-left:20px;margin-bottom:10px">
+        <li>No cierres la sesión sin haber descargado el archivo.</li>
+        <li>Anota tu código en tu cuaderno.</li>
+        <li>Envía el archivo al correo de tu profesor.</li>
+      </ul>
+    </div>
+
+    <div class="alert" style="font-size:.95rem;text-align:left">
+      <strong>⚠️ MUY IMPORTANTE:</strong><br>
+      1. Guarda este archivo en tu computadora o USB.<br>
+      2. Anota tu código en un lugar seguro.<br>
+      3. <strong>Lo necesitarás la próxima clase</strong> para hacer la Parte 2.
+    </div>
+
+    <button class="btn-back" id="btnBackWork">✏️ Volver a revisar mis datos</button>
+  </div>
+</main>
+
+<footer>
+  <strong>Colegio Colombo Americano CAS · Bogotá, Colombia</strong><br>
+  Física 6 · Grado Sexto · Cambridge Lower Secondary Checkpoint 9Pf.01 · Prof. Gustavo Ramírez · Jhonny García
+</footer>
+
+<script>
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const hoyISO = () => { const d=new Date(),p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); };
+const genCode = () => { const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s=''; for(let i=0;i<4;i++) s+=a[Math.floor(Math.random()*a.length)]; return '9PF-'+new Date().getFullYear()+'-'+s; };
+
+/* ---------- DETECCIÓN DE IPAD ---------- */
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+/* ---------- PREGUNTAS ---------- */
+const QS_A = [
+  {id:'A1', t:'En el Experimento A los tres bloques pesan lo mismo (1,00 kg). El bloque Amarillo tiene 5,00 L de volumen. ¿Cuál es su densidad?', opts:[
+    {v:'a',t:'0,20 kg/L'},{v:'b',t:'1,00 kg/L'},{v:'c',t:'5,00 kg/L'},{v:'d',t:'6,00 kg/L'}]},
+  {id:'A2', t:'En el Experimento A, el bloque Azul tiene 0,80 L de volumen. ¿Qué le pasa cuando lo pones en el agua (ρ = 1,00 kg/L)?', opts:[
+    {v:'a',t:'Flota, porque es el más pequeño'},{v:'b',t:'Se hunde, porque su densidad es mayor que la del agua'},{v:'c',t:'Flota, porque los bloques azules flotan'},{v:'d',t:'Se hunde, porque es el más liviano'}]},
+  {id:'A3', t:'En el Experimento A los tres bloques pesan lo mismo, pero el Amarillo tiene 5,00 L y el Azul 0,80 L. ¿Cuál tiene MAYOR densidad?', opts:[
+    {v:'a',t:'El Amarillo, porque tiene más volumen'},{v:'b',t:'El Azul, porque su volumen es menor'},{v:'c',t:'Los dos tienen la misma densidad'},{v:'d',t:'No se puede saber con esos datos'}]}
+];
+const QS_B = [
+  {id:'B1', t:'En el Experimento B los tres bloques tienen 5,00 L. El bloque Verde tiene 6,00 kg de masa. ¿Cuál es su densidad?', opts:[
+    {v:'a',t:'0,83 kg/L'},{v:'b',t:'1,00 kg/L'},{v:'c',t:'1,20 kg/L'},{v:'d',t:'5,00 kg/L'}]},
+  {id:'B2', t:'En el Experimento B, el bloque Azul tiene 10,00 kg y 5,00 L. ¿Qué le pasa en el agua (ρ = 1,00 kg/L)?', opts:[
+    {v:'a',t:'Flota, porque es el más grande'},{v:'b',t:'Se hunde, porque su densidad (2,00 kg/L) es mayor que la del agua'},{v:'c',t:'Se disuelve en el agua'},{v:'d',t:'Flota a medias'}]},
+  {id:'B3', t:'En el Experimento B los tres bloques tienen el MISMO volumen (5,00 L). ¿Cuál tiene MAYOR densidad?', opts:[
+    {v:'a',t:'El que pesa más (Azul, 10 kg)'},{v:'b',t:'El que pesa menos (Amarillo, 1 kg)'},{v:'c',t:'Los tres tienen la misma densidad'},{v:'d',t:'No se puede saber'}]}
+];
+const QS_C = [
+  {id:'C1', t:'Un bloque misterioso tiene masa 7,90 kg y volumen 1,00 L. Según la tabla de densidades, ¿de qué material está hecho?', opts:[
+    {v:'a',t:'Agua (1,00 kg/L)'},{v:'b',t:'Aluminio (2,70 kg/L)'},{v:'c',t:'Hierro (7,90 kg/L)'},{v:'d',t:'Oro (19,30 kg/L)'}]},
+  {id:'C2', t:'Un bloque del Misterio tiene densidad de 0,40 kg/L. ¿Qué material es y qué hace en el agua?', opts:[
+    {v:'a',t:'Madera; flota'},{v:'b',t:'Madera; se hunde'},{v:'c',t:'Hierro; se hunde'},{v:'d',t:'Agua; flota'}]},
+  {id:'C3', t:'En el Misterio, el bloque C tiene masa 2,70 kg y volumen 1,00 L. ¿De qué material está hecho?', opts:[
+    {v:'a',t:'Aluminio'},{v:'b',t:'Agua'},{v:'c',t:'Cobre'},{v:'d',t:'Plomo'}]}
+];
+const QS_ANALYSIS = [
+  {id:'D1', t:'¿Cuál es la fórmula correcta para calcular la densidad de un objeto?', opts:[
+    {v:'a',t:'ρ = masa × volumen'},{v:'b',t:'ρ = masa ÷ volumen'},{v:'c',t:'ρ = volumen ÷ masa'},{v:'d',t:'ρ = masa + volumen'}]},
+  {id:'D2', t:'Tienes una piedra con masa de 250 g y un volumen de 100 cm³. ¿Cuál es su densidad?', opts:[
+    {v:'a',t:'0,4 g/cm³'},{v:'b',t:'2,5 g/cm³'},{v:'c',t:'25 g/cm³'},{v:'d',t:'250 g/cm³'}]},
+  {id:'D3', t:'Esa misma piedra tiene una densidad de 2,5 g/cm³. Si la echas al agua (ρ = 1,0 g/cm³), ¿qué pasa?', opts:[
+    {v:'a',t:'Flota, porque es muy pesada'},{v:'b',t:'Flota, porque su densidad es menor'},{v:'c',t:'Se hunde, porque su densidad es mayor que la del agua'},{v:'d',t:'Se queda flotando en el medio'}]},
+  {id:'D4', t:'Si un objeto FLOTA en el agua, ¿qué podemos afirmar sobre su densidad?', opts:[
+    {v:'a',t:'Es mayor que 1,00 kg/L'},{v:'b',t:'Es exactamente igual a 1,00 kg/L'},{v:'c',t:'Es menor que 1,00 kg/L'},{v:'d',t:'No tiene densidad'}]},
+  {id:'D5', t:'Si tomas uno de los bloques del simulador y lo cortas exactamente a la mitad, ¿qué pasa con la densidad de esa mitad?', opts:[
+    {v:'a',t:'La densidad se reduce a la mitad'},{v:'b',t:'La densidad se duplica'},{v:'c',t:'La densidad se vuelve cero'},{v:'d',t:'La densidad sigue siendo la misma'}]},
+  {id:'D6', t:'Tienes dos bloques con el MISMO volumen. El bloque A tiene 2 kg de masa y el bloque B tiene 6 kg de masa. ¿Qué puedes afirmar?', opts:[
+    {v:'a',t:'El bloque A tiene mayor densidad'},{v:'b',t:'El bloque B tiene mayor densidad'},{v:'c',t:'Los dos tienen la misma densidad'},{v:'d',t:'El volumen cambiará si los pesas'}]},
+  {id:'D7', t:'Según la tabla de densidades, un bloque tiene una densidad de 0,92 g/cm³. ¿De qué material es y qué pasa en el agua?', opts:[
+    {v:'a',t:'Es corcho y se hunde'},{v:'b',t:'Es hielo y flota'},{v:'c',t:'Es aluminio y se hunde'},{v:'d',t:'Es hielo y se hunde'}]}
+];
+
+function renderMC(arr, id){
+  const el = $(id);
+  if(!el) return;
+  el.innerHTML = arr.map(q => `
+    <div class="mc">
+      <div class="q">${q.id}. ${q.t} <span style="color:#6b7280;font-weight:600">(5 pts)</span></div>
+      ${q.opts.map(o => `<label><input type="radio" name="${q.id}" value="${o.v}"><span>${o.v}) ${o.t}</span></label>`).join('')}
+    </div>`).join('');
+}
+
+const LS_KEY = 'lab_densidad_v4';
+
+function recogerDatos(){
+  let codigoActual = ($('codigo') && $('codigo').value) || '';
+  if(!codigoActual){
+    codigoActual = genCode();
+    if($('codigo')) $('codigo').value = codigoActual;
+  }
+  
+  const d = {
+    version: 4, codigo: codigoActual,
+    fecha: $('fecha') ? $('fecha').value : '',
+    estudiante1: $('est1') ? $('est1').value.trim() : '',
+    estudiante2: $('est2') ? $('est2').value.trim() : '',
+    estudiante3: $('est3') ? $('est3').value.trim() : '',
+    curso: $('curso') ? $('curso').value : '',
+    docente: $('docente') ? $('docente').value : '',
+    mc:{}, expA:{}, expB:{}, expM:{}, abiertas:{}, estado:'p1_done'
+  };
+  ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3','D4','D5','D6','D7'].forEach(q => {
+    const el = document.querySelector(`#labForm input[name="${q}"]:checked`);
+    d.mc[q] = el ? el.value : '';
+  });
+  ['amarillo','verde','azul'].forEach(b => {
+    d.expA[b] = {
+      m: $(`A_${b}_m`) ? $(`A_${b}_m`).value : '',
+      v: $(`A_${b}_v`) ? $(`A_${b}_v`).value : '',
+      est: $(`A_${b}_est`) ? $(`A_${b}_est`).value : ''
+    };
+    d.expB[b] = {
+      m: $(`B_${b}_m`) ? $(`B_${b}_m`).value : '',
+      v: $(`B_${b}_v`) ? $(`B_${b}_v`).value : '',
+      est: $(`B_${b}_est`) ? $(`B_${b}_est`).value : ''
+    };
+  });
+  [1,2,3,4,5].forEach(i => {
+    d.expM['M'+i] = {
+      m: $(`M${i}_m`) ? $(`M${i}_m`).value : '',
+      v: $(`M${i}_v`) ? $(`M${i}_v`).value : '',
+      mat: $(`M${i}_mat`) ? $(`M${i}_mat`).value : ''
+    };
+  });
+  return d;
+}
+
+function guardarLocal(d){
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(d)); }
+  catch(e){ console.warn('No se pudo guardar en localStorage:', e); }
+}
+
+function guardarAuto(){ guardarLocal(recogerDatos()); }
+
+function actualizarRho(){
+  const calc = (mEl, vEl) => {
+    if(!mEl || !vEl) return '—';
+    const m = parseFloat(mEl.value), v = parseFloat(vEl.value);
+    if(isFinite(m) && isFinite(v) && v > 0) return (m/v).toFixed(2);
+    return '—';
+  };
+  ['amarillo','verde','azul'].forEach(b => {
+    const elA = $('rhoA_'+b);
+    const elB = $('rhoB_'+b);
+    if(elA) elA.textContent = calc($(`A_${b}_m`), $(`A_${b}_v`));
+    if(elB) elB.textContent = calc($(`B_${b}_m`), $(`B_${b}_v`));
+  });
+  [1,2,3,4,5].forEach(i => {
+    const el = $('rhoM'+i);
+    if(el) el.textContent = calc($(`M${i}_m`), $(`M${i}_v`));
+  });
+}
+
+function restaurar(){
+  try{ const r = localStorage.getItem(LS_KEY); return r ? JSON.parse(r) : null; }
+  catch(e){ return null; }
+}
+
+function aplicarDatos(d){
+  if(!d) return;
+  if(d.estudiante1 && $('est1')) $('est1').value = d.estudiante1;
+  if(d.estudiante2 && $('est2')) $('est2').value = d.estudiante2;
+  if(d.estudiante3 && $('est3')) $('est3').value = d.estudiante3;
+  if(d.curso && $('curso')) $('curso').value = d.curso;
+  if(d.docente && $('docente')) $('docente').value = d.docente;
+  if(d.fecha && $('fecha')) $('fecha').value = d.fecha;
+  if(d.codigo && $('codigo')) $('codigo').value = d.codigo;
+  
+  ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3','D4','D5','D6','D7'].forEach(q => {
+    const v = d.mc && d.mc[q];
+    if(v){ const el = document.querySelector(`input[name="${q}"][value="${v}"]`); if(el) el.checked = true; }
+  });
+  ['amarillo','verde','azul'].forEach(b => {
+    if(d.expA && d.expA[b]){
+      if($(`A_${b}_m`)) $(`A_${b}_m`).value = d.expA[b].m || '';
+      if($(`A_${b}_v`)) $(`A_${b}_v`).value = d.expA[b].v || '';
+      if($(`A_${b}_est`)) $(`A_${b}_est`).value = d.expA[b].est || '';
+    }
+    if(d.expB && d.expB[b]){
+      if($(`B_${b}_m`)) $(`B_${b}_m`).value = d.expB[b].m || '';
+      if($(`B_${b}_v`)) $(`B_${b}_v`).value = d.expB[b].v || '';
+      if($(`B_${b}_est`)) $(`B_${b}_est`).value = d.expB[b].est || '';
+    }
+  });
+  [1,2,3,4,5].forEach(i => {
+    const m = d.expM && d.expM['M'+i];
+    if(m){
+      if($(`M${i}_m`)) $(`M${i}_m`).value = m.m || '';
+      if($(`M${i}_v`)) $(`M${i}_v`).value = m.v || '';
+      if($(`M${i}_mat`)) $(`M${i}_mat`).value = m.mat || '';
+    }
+  });
+  actualizarRho();
+  actualizarCorreoDestino();
+}
+
+function actualizarCorreoDestino(){
+  const curso = $('curso') ? $('curso').value : '';
+  const emailBox = $('emailDestino');
+  if(!emailBox) return;
+  if(curso === '6C'){
+    emailBox.innerHTML = 'Enviar a: <strong>jgarcia@cas.edu.co</strong>';
+  } else if(curso === '6A' || curso === '6B'){
+    emailBox.innerHTML = 'Enviar a: <strong>gramirez@cas.edu.co</strong>';
+  } else {
+    emailBox.innerHTML = 'Selecciona tu curso en el Paso 1 para saber el correo.';
+  }
+}
+
+/* ---------- Generar respaldo ---------- */
+function generarRespaldoParte1(d){
+  const json = JSON.stringify(d, null, 2);
+  const fecha = new Date().toLocaleString('es-CO');
+  const filaExp = (exp) => ['amarillo','verde','azul'].map(b => {
+    const x = (exp && exp[b]) || {};
+    const m = parseFloat(x.m), v = parseFloat(x.v);
+    const rho = (isFinite(m) && isFinite(v) && v>0) ? (m/v).toFixed(2) : '—';
+    return `| ${b} | ${x.m||'—'} | ${x.v||'—'} | ${rho} | ${x.est||'—'} |`;
+  }).join('\n');
+  const filaMis = [1,2,3,4,5].map(i => {
+    const x = (d.expM && d.expM['M'+i]) || {};
+    const m = parseFloat(x.m), v = parseFloat(x.v);
+    const rho = (isFinite(m) && isFinite(v) && v>0) ? (m/v).toFixed(2) : '—';
+    return `| M${i} | ${x.m||'—'} | ${x.v||'—'} | ${rho} | ${x.mat||'—'} |`;
+  }).join('\n');
+
+  return `# Respaldo · Parte 1 · Laboratorio de Densidad
+
+**Colegio Colombo Americano CAS · Bogotá, Colombia**
+**Física 6 · Grado Sexto · Cambridge 9Pf.01**
+**Docentes: Gustavo Ramírez · Jhonny García**
+
+---
+
+## 👥 Datos del grupo
+
+- **Estudiante 1:** ${d.estudiante1 || '—'}
+- **Estudiante 2:** ${d.estudiante2 || '—'}
+- **Estudiante 3:** ${d.estudiante3 || '—'}
+- **Curso:** ${d.curso || '—'}
+- **Docente:** ${d.docente || '—'}
+- **Fecha:** ${d.fecha || '—'}
+- **Código:** \`${d.codigo || '—'}\`
+
+---
+
+## 📊 Datos del experimento
+
+### Experimento A · Misma masa
+
+| Bloque | Masa (kg) | Volumen (L) | Densidad (kg/L) | ¿Flota o se hunde? |
+|--------|-----------|-------------|-----------------|---------------------|
+${filaExp(d.expA)}
+
+### Experimento B · Mismo volumen
+
+| Bloque | Masa (kg) | Volumen (L) | Densidad (kg/L) | ¿Flota o se hunde? |
+|--------|-----------|-------------|-----------------|---------------------|
+${filaExp(d.expB)}
+
+### 🕵️ Bloques misteriosos (Grupo 1)
+
+| Bloque | Masa (kg) | Volumen (L) | Densidad (kg/L) | Material |
+|--------|-----------|-------------|-----------------|----------|
+${filaMis}
+
+---
+
+## 📝 Respuestas de opción múltiple
+
+${['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3','D4','D5','D6','D7'].map(q =>
+  `- **${q}:** ${(d.mc && d.mc[q]) || '(sin responder)'}`
+).join('\n')}
+
+---
+
+## ⚠️ IMPORTANTE
+
+**Guarda este archivo.** Lo necesitarás la próxima clase para continuar con la Parte 2 en \`LaboratorioDensidadParte2.html\`.
+
+---
+
+*Respaldo generado el ${fecha} · Laboratorio Virtual v4.5*
+
+<!-- DATOS_JSON_INICIO
+${json}
+DATOS_JSON_FIN -->
+`;
+}
+
+/* ---------- UTILIDADES DE DESCARGA UNIVERSAL ---------- */
+async function descargarArchivoUniversal(nombre, contenido, tipoMIME){
+  try {
+    const blob = new Blob([contenido], { type: tipoMIME });
+    
+    // 1. Intentar usar Web Share API (nativo en iPad/iPhone)
+    if (isIOS && navigator.canShare) {
+      try {
+        const file = new File([blob], nombre, { type: tipoMIME });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: nombre,
+            text: 'Aquí está mi respaldo del laboratorio de densidad.'
+          });
+          return;
+        }
+      } catch (err) {
+        console.warn('Share falló, intentando descarga directa...', err);
+      }
+    }
+    
+    // 2. Fallback: descarga directa (funciona en PC, Mac y Android)
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombre;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+    
+  } catch(err) {
+    console.error('Error al descargar:', err);
+    alert('❌ Hubo un error inesperado al descargar. Intenta usar el botón de "Copiar texto".');
+  }
+}
+
+/* ---------- INIT ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('🚀 Inicializando laboratorio...');
+  if (isIOS) console.log('📱 Detectado dispositivo iOS (iPad/iPhone)');
+  
+  renderMC(QS_A, 'mcA');
+  renderMC(QS_B, 'mcB');
+  renderMC(QS_C, 'mcC');
+  renderMC(QS_ANALYSIS, 'mcAnalysis');
+
+  const dExistente = restaurar();
+  if(dExistente && dExistente.codigo){ $('codigo').value = dExistente.codigo; }
+  else { $('codigo').value = genCode(); }
+  $('fecha').value = hoyISO();
+  aplicarDatos(dExistente);
+
+  // Lógica del botón para abrir simulador aparte
+  const btnAparte = $('btnAbrirSimulador');
+  if(btnAparte){
+    btnAparte.addEventListener('click', () => {
+      window.open('https://phet.colorado.edu/sims/html/density/latest/density_all.html?locale=es', '_blank');
+    });
+  }
+
+  // Auto-guardado
+  $('labForm').addEventListener('input', () => { guardarAuto(); actualizarRho(); });
+  $('labForm').addEventListener('change', () => { guardarAuto(); actualizarRho(); });
+  $('curso').addEventListener('change', actualizarCorreoDestino);
+
+  // Botón iniciar
+  $('btnStart').addEventListener('click', () => {
+    $('viewInstructions').classList.add('hidden');
+    $('viewWork').classList.remove('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  /* BOTÓN NUEVA PAREJA */
+  $('btnNuevaPareja').addEventListener('click', () => {
+    if(confirm('⚠️ ¿Seguro que quieres borrar los datos actuales?\n\nHaz clic en "Aceptar" si eres un GRUPO NUEVO que va a empezar el laboratorio desde cero.')) {
+      localStorage.removeItem(LS_KEY);
+      window.location.reload();
+    }
+  });
+
+  /* BOTÓN GUARDAR Y TERMINAR */
+  $('btnContinue').addEventListener('click', function(ev){
+    if(ev){ ev.preventDefault(); ev.stopPropagation(); }
+    
+    try {
+      const d = recogerDatos();
+      
+      const faltantes = [];
+      if(!d.estudiante1) faltantes.push({id:'est1', nombre:'Estudiante 1'});
+      if(!d.estudiante2) faltantes.push({id:'est2', nombre:'Estudiante 2'});
+      if(!d.curso) faltantes.push({id:'curso', nombre:'Curso'});
+      if(!d.docente) faltantes.push({id:'docente', nombre:'Docente'});
+      
+      if(faltantes.length > 0){
+        alert('⚠️ FALTAN DATOS OBLIGATORIOS:\n\n' +
+          faltantes.map(f => '• ' + f.nombre).join('\n') +
+          '\n\nComplétalos y vuelve a hacer clic en el botón.');
+        const primerEl = $(faltantes[0].id);
+        if(primerEl){
+          primerEl.focus();
+          primerEl.scrollIntoView({behavior:'smooth', block:'center'});
+        }
+        return;
+      }
+      
+      const mcFaltantes = [];
+      ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3','D4','D5','D6','D7'].forEach(q => {
+        if(!d.mc[q]) mcFaltantes.push(q);
+      });
+      
+      guardarLocal(d);
+      
+      const elCodigo = $('codigoShow');
+      if(elCodigo) elCodigo.textContent = d.codigo || '—';
+      
+      actualizarCorreoDestino();
+      
+      const vWork = $('viewWork');
+      const vDone = $('viewDone');
+      if(vWork) vWork.classList.add('hidden');
+      if(vDone) vDone.classList.remove('hidden');
+      
+      window.scrollTo({top:0,behavior:'smooth'});
+      
+      if(mcFaltantes.length > 0){
+        setTimeout(() => {
+          alert('⚠️ ATENCIÓN:\n\nAún no respondiste estas preguntas:\n\n' +
+            mcFaltantes.join(', ') +
+            '\n\nTu trabajo quedó guardado, pero el profesor verá cuáles faltan.\n\nPuedes usar el botón "✏️ Volver a revisar mis datos" si quieres completarlas.');
+        }, 300);
+      }
+      
+      console.log('✅ Parte 1 guardada. Código:', d.codigo);
+      
+    } catch(err){
+      console.error('❌ Error al guardar la Parte 1:', err);
+      alert('❌ Ocurrió un error inesperado.\n\nDetalles: ' + (err.message || err) + 
+        '\n\nPor favor, intenta recargar la página (F5) y vuelve a intentar.');
+    }
+  });
+
+  // Descargar respaldo
+  $('btnDownloadBackup').addEventListener('click', async () => {
+    const d = recogerDatos();
+    const md = generarRespaldoParte1(d);
+    const nombre = `parte1_densidad_${(d.estudiante1 || 'grupo').replace(/\s+/g,'_')}_${d.codigo}.txt`;
+    
+    await descargarArchivoUniversal(nombre, md, 'text/plain;charset=utf-8');
+    
+    let correo = 'tu profesor';
+    if(d.curso === '6C') correo = 'jgarcia@cas.edu.co';
+    if(d.curso === '6A' || d.curso === '6B') correo = 'gramirez@cas.edu.co';
+    
+    alert('✅ Respaldo listo.\n\n📁 Archivo: ' + nombre + '\n\n📧 NO OLVIDES: enviarlo a ' + correo + '\n\n⚠️ Guarda este archivo y tu código (' + d.codigo + ') para la próxima clase.');
+  });
+
+  // Copiar respaldo (útil para iPads)
+  $('btnCopyBackup').addEventListener('click', () => {
+    try {
+      const d = recogerDatos();
+      const md = generarRespaldoParte1(d);
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(md).then(() => {
+          let correo = 'tu profesor';
+          if(d.curso === '6C') correo = 'jgarcia@cas.edu.co';
+          if(d.curso === '6A' || d.curso === '6B') correo = 'gramirez@cas.edu.co';
+          alert('✅ ¡Texto copiado al portapapeles!\n\nAhora pégalo en un correo electrónico o en un documento de Word/Google Docs y envíalo a ' + correo + '\n\n⚠️ Guarda tu código (' + d.codigo + ') para la próxima clase.');
+        }).catch(err => {
+          alert('⚠️ No se pudo copiar automáticamente. Por favor, usa el botón verde de "Descargar".');
+        });
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = md;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          alert('✅ ¡Texto copiado al portapapeles!\n\nPégalo en un correo electrónico y envíalo a tu profesor.');
+        } catch (err) {
+          alert('⚠️ No se pudo copiar. Usa el botón verde de "Descargar".');
+        }
+        document.body.removeChild(textarea);
+      }
+    } catch(err){
+      console.error('Error al copiar:', err);
+      alert('❌ Error al copiar: ' + (err.message || err));
+    }
+  });
+  
+  // Volver a revisar
+  $('btnBackWork').addEventListener('click', () => {
+    $('viewDone').classList.add('hidden');
+    $('viewWork').classList.remove('hidden');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  actualizarRho();
+  actualizarCorreoDestino();
+  
+  console.log('✅ Laboratorio inicializado correctamente.');
+});
+})();
+</script>
+</body>
+</html>
