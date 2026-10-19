@@ -1,0 +1,1402 @@
+<!DOCTYPE html>
+<html lang="es-CO">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Parte 2 · Análisis · Densidad</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--p:#7c3aed;--pd:#5b21b6;--pl:#ede9fe;--g:#10b981;--gl:#d1fae5;--r:#ef4444;--rl:#fee2e2;--a:#f59e0b;--al:#fef3c7;--b:#3b82f6;--bl:#dbeafe;--gr:#eef2f7;--ink:#1f2937;--mut:#6b7280;--ln:#e5e7eb}
+body{font-family:'Segoe UI',system-ui,Arial,sans-serif;font-size:16px;line-height:1.5;color:var(--ink);background:var(--gr);-webkit-text-size-adjust:100%}
+h1,h2,h3,h4{margin:0 0 .4em;line-height:1.25}
+p{margin:.3em 0}
+button{font-family:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--p);outline-offset:2px;border-radius:6px}
+.topbar{background:linear-gradient(135deg,var(--pd),var(--p));color:#fff;padding:14px 22px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;justify-content:space-between;box-shadow:0 4px 14px rgba(16,24,40,.15)}
+.brand{display:flex;gap:14px;align-items:center}
+.logo{width:52px;height:52px;border-radius:14px;background:rgba(255,255,255,.18);display:grid;place-items:center;font-size:26px}
+.brand h1{font-size:1.05rem;margin:0}
+.brand .sub{font-size:.76rem;opacity:.92;margin:1px 0}
+.pill{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);padding:5px 11px;border-radius:999px;font-size:.78rem;font-weight:600}
+.wrap{max-width:1100px;margin:0 auto;padding:18px}
+.card{background:#fff;border-radius:14px;box-shadow:0 4px 14px rgba(16,24,40,.08);padding:16px;border:1px solid var(--ln);margin-bottom:14px}
+.card h2{color:var(--pd);font-size:1.05rem;margin-bottom:8px}
+.card h3{color:var(--pd);font-size:.98rem;margin:16px 0 8px}
+.hidden{display:none!important}
+.load{padding:36px 24px;max-width:640px;margin:40px auto;text-align:center}
+.load .ico{font-size:60px}
+.load h1{color:var(--pd);margin:10px 0}
+.load p{color:#4b5563;font-size:.94rem}
+.upload-box{border:3px dashed var(--p);border-radius:14px;padding:26px 18px;text-align:center;background:var(--pl);cursor:pointer;transition:.15s;display:block;margin:16px 0}
+.upload-box:hover{background:#ddd6fe}
+.upload-box input{display:none}
+.upload-box .ico2{font-size:42px}
+.upload-box .txt{font-weight:800;color:var(--pd);margin-top:6px}
+.upload-box .sub{font-size:.82rem;margin-top:4px;color:var(--pd)}
+.btn{background:var(--p);color:#fff;border:none;padding:13px 22px;border-radius:10px;font-size:.95rem;font-weight:800;width:100%;transition:.15s}
+.btn:hover{background:var(--pd)}
+.btn-green{background:linear-gradient(135deg,var(--g),#059669);box-shadow:0 6px 18px rgba(16,185,129,.35);padding:16px 24px;font-size:1.02rem}
+.btn-green:hover{transform:translateY(-1px)}
+.btn-gray{background:#fff;border:2px solid var(--ln);color:var(--ink)}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btn-row .btn{flex:1;min-width:140px;width:auto}
+.fld{display:block;font-weight:700;font-size:.84rem;margin:10px 0 5px;color:#374151}
+textarea{width:100%;min-height:150px;padding:12px 14px;border:2px solid var(--ln);border-radius:10px;font-size:.95rem;font-family:inherit;line-height:1.5;resize:vertical}
+textarea:focus{border-color:var(--p);outline:none;box-shadow:0 0 0 3px var(--pl)}
+table.tbl{width:100%;border-collapse:collapse;margin:8px 0;font-size:.85rem}
+table.tbl th{background:var(--p);color:#fff;padding:7px 8px;text-align:left;font-size:.74rem;text-transform:uppercase}
+table.tbl td{border-bottom:1px solid var(--ln);padding:6px 8px}
+.summary-row{background:#fafbfc;border-radius:10px;padding:10px 14px;margin:8px 0;font-size:.88rem}
+.summary-row strong{color:var(--pd)}
+.summary-tag{display:inline-block;padding:2px 8px;border-radius:999px;font-weight:800;font-size:.74rem;margin-left:4px}
+.tag-flota{background:var(--gl);color:#065f46}
+.tag-hunde{background:var(--rl);color:#991b1b}
+.open-q{background:#fafbfc;border-left:4px solid var(--a);border-radius:10px;padding:14px;margin:14px 0}
+.open-q .titulo{font-weight:800;color:#92400e;font-size:.94rem;margin-bottom:6px}
+.open-q .enunciado{font-size:.9rem;color:#374151;margin-bottom:10px;background:#fff;padding:10px;border-radius:8px;border-left:3px solid var(--a)}
+.info{background:var(--bl);border-left:4px solid var(--b);padding:11px;border-radius:10px;font-size:.85rem;color:#1e40af;margin:10px 0}
+.alert{background:var(--rl);border-left:4px solid var(--r);padding:11px;border-radius:10px;font-size:.85rem;color:#991b1b;margin:10px 0}
+.email-box{background:#fff;border:2px dashed var(--p);border-radius:10px;padding:12px;margin:10px 0;font-size:1rem;color:var(--pd);font-weight:800;text-align:center}
+.email-box code{background:#f5f3ff;padding:4px 10px;border-radius:6px;font-size:1rem;letter-spacing:.02em}
+/* Teacher */
+.teacher{padding:20px;max-width:1300px;margin:0 auto}
+.mc-row{display:flex;gap:10px;align-items:center;padding:7px 10px;border-bottom:1px solid var(--ln);font-size:.85rem;flex-wrap:wrap}
+.mc-row.ok{background:var(--gl)}
+.mc-row.bad{background:var(--rl)}
+.mc-row .qid{font-weight:800;min-width:36px}
+.mc-row .ans{font-family:monospace;font-weight:800;padding:2px 8px;background:#fff;border-radius:6px;border:1px solid var(--ln);min-width:28px;text-align:center}
+.mc-row .pts{margin-left:auto;font-weight:900;min-width:44px;text-align:right}
+.score-big{text-align:center;padding:20px;background:linear-gradient(135deg,#ecfdf5,#d1fae5);border-radius:14px;margin:14px 0}
+.score-big .num{font-size:3rem;font-weight:900;color:#065f46;line-height:1}
+.score-big .lbl{font-size:.82rem;color:#374151;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.open-grade{background:#fafbfc;border-left:4px solid var(--a);border-radius:10px;padding:14px;margin:14px 0}
+.open-grade .q{font-weight:800;font-size:.92rem;margin-bottom:8px;color:#111827}
+.open-grade .resp{background:#fff;border:1px solid var(--ln);border-radius:8px;padding:12px;font-size:.9rem;white-space:pre-wrap;min-height:60px;line-height:1.5;margin-bottom:10px}
+.grade-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.grade-row input[type=range]{flex:1;min-width:140px;accent-color:var(--p)}
+.grade-row .pts-lbl{font-weight:900;min-width:70px;text-align:right}
+.btn-q{background:#fff;border:2px solid var(--ln);border-radius:8px;padding:6px 10px;font-size:.78rem;font-weight:800}
+.btn-q:hover{background:var(--pl);border-color:var(--p)}
+footer{background:#111827;color:#9ca3af;padding:18px;text-align:center;font-size:.78rem;margin-top:30px;position:relative}
+footer strong{color:#fff}
+footer .btn-admin{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:.75rem;padding:6px 12px;border-radius:6px;cursor:pointer;margin-top:10px;transition:0.2s;}
+footer .btn-admin:hover{background:var(--p);border-color:var(--p);}
+.code-box{background:#111827;color:#34d399;font-family:'Courier New',monospace;font-size:1.6rem;font-weight:900;letter-spacing:.1em;padding:14px;border-radius:12px;text-align:center;margin:12px 0;word-break:break-all}
+.btn-reset-view{background:#fef3c7;border:1px solid #fcd34d;color:#92400e;font-size:.78rem;font-weight:700;padding:6px 12px;border-radius:6px;cursor:pointer;float:right;}
+.btn-reset-view:hover{background:#fde68a;}
+.btn-copy{background:#fff;border:2px solid var(--ln);color:var(--ink);padding:10px 18px;border-radius:10px;font-weight:700;margin-top:10px;width:100%;font-size:.9rem}
+.btn-copy:hover{background:#f9fafb}
+@media print{.topbar,.no-print,footer,.btn-row,.upload-box{display:none!important}body{background:#fff;font-size:11pt}.card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid}}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">🧪</div>
+    <div>
+      <h1 id="brandTitle">Parte 2 · Análisis y conclusión</h1>
+      <p class="sub">Colegio Colombo Americano CAS · Bogotá, Colombia</p>
+      <p class="sub">Física 6 · Grado Sexto · Cambridge 9Pf.01 · Prof. Gustavo Ramírez · Jhonny García</p>
+    </div>
+  </div>
+  <span class="pill" id="pillModo">📝 Estudiante · 20 / 100 pts</span>
+</header>
+
+<!-- ===== CARGA (sin datos) ===== -->
+<main id="viewLoad" class="hidden">
+  <div class="card load">
+    <div class="ico">📂</div>
+    <h1>Continuemos con la Parte 2</h1>
+    
+    <div style="background:#fef3c7;border-left:4px solid var(--a);border-radius:10px;padding:12px;text-align:left;margin:18px 0;font-size:.88rem">
+      <strong>⚠️ Antes de empezar:</strong><br>
+      Necesitas el archivo que descargaste en la clase anterior (.txt o .md).<br>
+      Si no lo tienes, pídele a tu profesor que te lo reenvíe.
+    </div>
+
+    <div class="alert" style="text-align:left;background:#eff6ff;border-color:#3b82f6;color:#1e40af;">
+      <strong>📱 ¿Estás en iPad o Tablet?</strong><br>
+      Si no puedes seleccionar el archivo, abre ese archivo en tu iPad, copia todo el texto y pégalo en el cuadro de abajo.
+    </div>
+
+    <p style="margin-bottom:14px;font-weight:700;color:var(--pd)">
+      Paso 1: Sube tu archivo de respaldo de la Parte 1
+    </p>
+    
+    <label class="upload-box" for="fileLoad">
+      <div class="ico2">📤</div>
+      <div class="txt">Haz clic aquí para subir el archivo</div>
+      <div class="sub">(Busca el archivo .txt o .md)</div>
+      <input type="file" id="fileLoad" accept=".md,.markdown,.txt,.json,text/*">
+    </label>
+    
+    <p style="text-align:center;font-size:.82rem;color:var(--mut);margin:14px 0">— o pega el contenido del archivo aquí abajo —</p>
+    <textarea id="pasteLoad" style="min-height:110px;font-family:monospace;font-size:.82rem" placeholder="Pega aquí el texto que copiaste…"></textarea>
+    <button class="btn" id="btnProcessLoad" style="margin-top:10px">🔓 Cargar mis datos y continuar</button>
+    
+    <div style="background:#ecfdf5;border-left:4px solid var(--g);border-radius:10px;padding:12px;text-align:left;margin:22px 0;font-size:.85rem">
+      <strong>💡 ¿Qué pasa después?</strong><br>
+      1. Verás un resumen de tus datos del experimento.<br>
+      2. Responderás 4 preguntas abiertas.<br>
+      3. Descargarás tu reporte final.<br>
+      4. Enviarás el reporte al correo de tu profesor.
+    </div>
+  </div>
+</main>
+
+<!-- ===== TRABAJO ===== -->
+<main id="viewWork" class="wrap hidden">
+  <div class="card">
+    <button class="btn-reset-view" onclick="resetStudentData()" title="Si no eres el dueño de estos datos, haz clic aquí para subir tu propio archivo">
+      🔄 Subir otro archivo
+    </button>
+    <h2>📊 Resumen de tu experimento</h2>
+    <p style="font-size:.86rem;color:var(--mut);margin-top:8px;clear:both;">Revisa los datos antes de responder.</p>
+    <div id="summaryPareja" style="margin-top:12px"></div>
+    
+    <h3>⚗️ Experimento A · Misma masa</h3>
+    <table class="tbl"><thead><tr><th>Bloque</th><th>Masa (kg)</th><th>Volumen (L)</th><th>Densidad (kg/L)</th><th>Resultado</th></tr></thead>
+      <tbody id="sumA"></tbody></table>
+    <h3>⚗️ Experimento B · Mismo volumen</h3>
+    <table class="tbl"><thead><tr><th>Bloque</th><th>Masa (kg)</th><th>Volumen (L)</th><th>Densidad (kg/L)</th><th>Resultado</th></tr></thead>
+      <tbody id="sumB"></tbody></table>
+    <h3>🕵️ Bloques misteriosos</h3>
+    <table class="tbl"><thead><tr><th>Bloque</th><th>Masa (kg)</th><th>Volumen (L)</th><th>Densidad (kg/L)</th><th>Material</th></tr></thead>
+      <tbody id="sumM"></tbody></table>
+  </div>
+
+  <div class="card">
+    <h2>✍️ Preguntas abiertas (4 × 5 pts = 20 pts)</h2>
+    <p style="font-size:.86rem;color:var(--mut)">Responde de forma clara y usa ejemplos de tus datos.</p>
+
+    <div class="open-q">
+      <div class="titulo">📝 Pregunta 1 (5 pts)</div>
+      <div class="enunciado">
+        En el <strong>Experimento A</strong> (misma masa) y en el <strong>Experimento B</strong> (mismo volumen), el bloque <strong>Azul siempre se hunde</strong>. Explica con tus palabras por qué el bloque Azul se hunde en ambos casos. Usa la palabra "densidad" en tu respuesta.
+      </div>
+      <textarea id="abierta1" placeholder="Escribe aquí tu explicación…" style="min-height:110px"></textarea>
+    </div>
+
+    <div class="open-q">
+      <div class="titulo">📝 Pregunta 2 (5 pts)</div>
+      <div class="enunciado">
+        Tomaste un bloque de <strong>corcho</strong> (densidad = 0,24 kg/L) y lo echaste en un líquido misterioso. Para tu sorpresa, <strong>el corcho se hundió</strong>. ¿Qué puedes decir sobre la densidad de ese líquido misterioso? ¿Es mayor o menor que 0,24 kg/L? Explica tu razonamiento.
+      </div>
+      <textarea id="abierta2" placeholder="Escribe aquí tu respuesta…" style="min-height:110px"></textarea>
+    </div>
+
+    <div class="open-q">
+      <div class="titulo">📝 Pregunta 3 (5 pts)</div>
+      <div class="enunciado">
+        Tienes dos bloques del mismo tamaño (1,00 L): uno de <strong>Hierro</strong> (ρ = 7,90 kg/L) y otro de <strong>Aluminio</strong> (ρ = 2,70 kg/L). <strong>Sin hacer cálculos</strong>, ¿cuál de los dos bloques pesa más? Explica por qué.
+      </div>
+      <textarea id="abierta3" placeholder="Escribe aquí tu respuesta…" style="min-height:100px"></textarea>
+    </div>
+
+    <div class="open-q">
+      <div class="titulo">📝 Pregunta 4 (5 pts)</div>
+      <div class="enunciado">
+        Escribe una conclusión de <strong>3 a 5 oraciones</strong> sobre lo que aprendiste en este laboratorio. Menciona qué es la densidad y cómo se relaciona con flotar o hundirse.
+      </div>
+      <textarea id="abierta4" placeholder="Escribe aquí tu conclusión…" style="min-height:120px"></textarea>
+    </div>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#ecfdf5,#d1fae5);border:2px solid var(--g)">
+    <h2 style="color:#065f46">📥 Descarga tu reporte final</h2>
+    <p style="font-size:.9rem;color:#374151;margin-bottom:12px">
+      Cuando termines las 4 preguntas abiertas, descarga tu reporte completo.
+    </p>
+    <button class="btn btn-green" id="btnDownload">⬇️ Descargar mi reporte final</button>
+    <button class="btn-copy" id="btnCopyReport">
+      📋 O copiar el reporte para enviarlo por correo
+    </button>
+    
+    <div style="background:#eff6ff;border-left:5px solid var(--b);border-radius:12px;padding:16px;text-align:left;margin:18px 0">
+      <h3 style="color:#1e40af;margin-bottom:8px;font-size:1.1rem">📧 ¿Cómo envío mi reporte?</h3>
+      
+      <ol style="margin:10px 0 14px 20px;font-size:.9rem;color:#374151;line-height:1.7">
+        <li>Descarga el archivo con el botón verde de arriba (o copia el texto).</li>
+        <li>Abre tu correo electrónico (Gmail, Outlook, etc.).</li>
+        <li>Copia el asunto y el correo de abajo.</li>
+        <li>Adjunta el archivo descargado (o pega el texto).</li>
+        <li>¡Envía el correo!</li>
+      </ol>
+
+      <div class="email-box" id="emailDestinoFinal" style="text-align:left;font-size:.95rem;line-height:1.6">
+        Cargando datos...
+      </div>
+
+      <div style="background:#fff;border:1px solid var(--ln);border-radius:8px;padding:10px;margin-top:10px;font-size:.85rem">
+        <strong>📌 Asunto del correo:</strong><br>
+        <span id="asuntoCorreo" style="font-family:monospace;color:var(--pd);font-weight:700">
+          Reporte Final Densidad - [Nombres] - [Código]
+        </span>
+      </div>
+    </div>
+
+    <div class="alert" style="font-size:.95rem;text-align:left">
+      <strong>⚠️ MUY IMPORTANTE:</strong><br>
+      Este es el reporte final que tu profesor calificará. Asegúrate de enviarlo al correo correcto.
+    </div>
+  </div>
+</main>
+
+<!-- ===== DOCENTE ===== -->
+<main id="viewTeacher" class="teacher hidden">
+
+  <div class="card" id="uploadCard">
+    <h2>📝 Calificar UN reporte</h2>
+    <p style="font-size:.88rem;color:var(--mut);margin-bottom:12px">
+      Sube el archivo final (.txt o .md). Las 16 MC (80 pts) y las 4 abiertas (20 pts) se <strong>califican automáticamente</strong>.
+    </p>
+    <label class="upload-box" for="fileGrade">
+      <div class="ico2">📂</div>
+      <div class="txt">Haz clic para subir un reporte</div>
+      <input type="file" id="fileGrade" accept=".md,.markdown,.txt,text/*">
+    </label>
+    <p style="text-align:center;font-size:.8rem;color:var(--mut);margin:12px 0">— o pega el contenido —</p>
+    <textarea id="pasteGrade" style="min-height:100px;font-family:monospace;font-size:.82rem" placeholder="Pega el contenido del reporte…"></textarea>
+    <button class="btn" id="btnProcess" style="margin-top:12px">🔍 Calificar</button>
+  </div>
+
+  <details class="card" style="background:#fef3c7;border-left:5px solid var(--a)">
+    <summary style="cursor:pointer;font-weight:800;color:#92400e;font-size:1rem;padding:6px">🧪 Probar calificación automática (calibración)</summary>
+    <p style="font-size:.86rem;color:#374151;margin:10px 0">
+      Pega una respuesta de ejemplo y verás cómo la califica el sistema.
+    </p>
+    <label class="fld" for="calibPregunta">Pregunta:</label>
+    <select id="calibPregunta" style="margin-bottom:8px">
+      <option value="1">Pregunta 1</option>
+      <option value="2">Pregunta 2</option>
+      <option value="3">Pregunta 3</option>
+      <option value="4">Pregunta 4</option>
+    </select>
+    <label class="fld" for="calibTexto">Respuesta:</label>
+    <textarea id="calibTexto" placeholder="Ej: El bloque azul no flota, se hunde porque es más denso…" style="min-height:100px"></textarea>
+    <button class="btn" id="btnCalibrar" style="margin-top:8px;background:var(--a);color:#7c2d12">🔍 Probar calificación</button>
+    <div id="calibResultado" style="margin-top:12px"></div>
+  </details>
+
+  <div class="card" style="background:linear-gradient(135deg,#f5f3ff,#ede9fe);border-left:5px solid var(--p)">
+    <h2 style="color:var(--pd)">📊 Historial de ajustes (calibración)</h2>
+    <p style="font-size:.86rem;color:#4b5563;margin-bottom:12px">
+      Cada ajuste manual se registra aquí. Úsalo para identificar qué patrones mejorar.
+    </p>
+    <div id="statsAjustes"></div>
+  </div>
+
+  <div class="card">
+    <h2>📦 Calificar MUCHOS reportes a la vez</h2>
+    <p style="font-size:.88rem;color:var(--mut);margin-bottom:12px">
+      Sube varios reportes de una vez. El sistema califica automáticamente.
+    </p>
+    <label class="upload-box" for="fileMultiple" style="border-color:var(--g);background:var(--gl)">
+      <div class="ico2">📚</div>
+      <div class="txt" style="color:#065f46">Haz clic para subir varios reportes</div>
+      <div class="sub" style="color:#065f46">Puedes seleccionar 30+ archivos a la vez</div>
+      <input type="file" id="fileMultiple" accept=".md,.markdown,.txt,text/*" multiple>
+    </label>
+    <p style="text-align:center;font-size:.82rem;color:var(--mut);margin:14px 0">
+      — o pega varios reportes separados por <code>---REPORTE---</code> —
+    </p>
+    <textarea id="pasteMulti" style="min-height:100px;font-family:monospace;font-size:.82rem" placeholder="Reporte 1…&#10;---REPORTE---&#10;Reporte 2…"></textarea>
+    <button class="btn" id="btnProcesarMulti" style="margin-top:10px;background:linear-gradient(135deg,var(--g),#059669)">⚡ Procesar todos</button>
+    <p id="barraMulti" style="text-align:center;font-size:.85rem;color:var(--pd);font-weight:700;margin-top:10px"></p>
+    <div id="multiResultados"></div>
+  </div>
+
+  <div class="card hidden" id="resultCard">
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+      <div>
+        <h2 id="resTitle" style="margin:0">Resultado</h2>
+        <p id="resMeta" style="font-size:.82rem;color:var(--mut);margin:2px 0 0"></p>
+      </div>
+      <button class="btn-q" id="btnNuevo">✖ Cerrar</button>
+    </div>
+
+    <div class="score-big">
+      <div class="num" id="scoreTotal">—</div>
+      <div class="lbl">Nota final</div>
+      <p id="scoreFrac" style="font-size:.86rem;color:#374151;margin-top:4px">de 100 puntos</p>
+    </div>
+
+    <div class="info" style="background:var(--gl);color:#065f46">
+      🤖 <strong>Calificación automática:</strong> las abiertas se evalúan por palabras clave. Revisa y ajusta si es necesario.
+    </div>
+
+    <h3>🎯 Opción múltiple (80 pts)</h3>
+    <div id="mcResults"></div>
+
+    <h3>✍️ Preguntas abiertas (20 pts)</h3>
+    <div id="openResults"></div>
+
+    <div class="btn-row">
+      <button class="btn" id="btnExportCSV">📥 Exportar calificación</button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <strong>Colegio Colombo Americano CAS · Bogotá, Colombia</strong><br>
+  Física 6 · Grado Sexto · Cambridge Lower Secondary Checkpoint 9Pf.01 · Prof. Gustavo Ramírez · Jhonny García<br>
+  <button class="btn-admin" id="btnAdmin">🔐 Entrar como Docente</button>
+</footer>
+
+<script>
+// Función global para limpiar los datos del estudiante y volver a la pantalla de carga
+window.resetStudentData = function() {
+  if(confirm('⚠️ ¿Seguro que quieres borrar los datos actuales?\n\nHaz clic en "Aceptar" si eres un estudiante nuevo que necesita subir su propio archivo de respaldo.')) {
+    localStorage.removeItem('lab_densidad_v4');
+    window.location.reload();
+  }
+};
+
+(function(){
+'use strict';
+const $ = id => document.getElementById(id);
+const $$ = sel => Array.from(document.querySelectorAll(sel));
+const esc = s => String(s??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const hoyISO = () => { const d=new Date(),p=n=>String(n).padStart(2,'0'); return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate()); };
+
+/* ---------- DETECCIÓN DE IPAD ---------- */
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+              (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+const LS_KEY = 'lab_densidad_v4';
+const LS_GRADES = 'lab_densidad_grades_v4';
+const LS_AJUSTES = 'lab_densidad_ajustes_v1';
+let isTeacher = new URLSearchParams(location.search).get('docente') === 'true';
+
+const KEYS = {A1:'a',A2:'b',A3:'b',B1:'c',B2:'b',B3:'a',C1:'c',C2:'a',C3:'a',D1:'b',D2:'b',D3:'c',D4:'c',D5:'d',D6:'b',D7:'b'};
+const MC_PTS = 5, OPEN_PTS = 5;
+const QIDS = ['A1','A2','A3','B1','B2','B3','C1','C2','C3','D1','D2','D3','D4','D5','D6','D7'];
+
+/* ============================================================
+   CALIFICACIÓN AUTOMÁTICA
+   ============================================================ */
+function normalizar(txt){
+  return String(txt || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/(\d),(\d)/g, '$1.$2').replace(/[^\w\s.,]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+function dividirClausulas(txt){
+  return txt.split(/[.;:!?]|\b(pero|sin embargo|aunque|mientras|sino|porque|ya que|puesto que|entonces|asi que|por lo tanto|ademas)\b/).map(c => c.trim()).filter(c => c.length > 4);
+}
+function ventanasClausulas(clausulas, tam = 2){
+  const out = [];
+  for(let i = 0; i < clausulas.length; i++){
+    for(let j = i; j < Math.min(i + tam + 1, clausulas.length); j++){
+      out.push(clausulas.slice(i, j+1).join(' '));
+    }
+  }
+  return out;
+}
+function afirmaFlota(txt){
+  const t = normalizar(txt);
+  if(/\bno\s+(se\s+)?flota\b/.test(t)) return false;
+  if(/\bflota\b/.test(t)) return true;
+  if(/\bflotaria\b/.test(t)) return true;
+  if(/\bno se hunde\b/.test(t)) return true;
+  return false;
+}
+function afirmaHunde(txt){
+  const t = normalizar(txt);
+  if(/\bno\s+(se\s+)?hunde\b/.test(t)) return false;
+  if(/\bse hunde\b/.test(t)) return true;
+  if(/\bhundiria\b/.test(t)) return true;
+  if(/\bva al fondo\b/.test(t)) return true;
+  if(/\bno flota\b/.test(t)) return true;
+  return false;
+}
+
+function calificarAbierta1(texto){
+  const t = normalizar(texto);
+  const detalle = [];
+  let pts = 0;
+
+  const c1 = /\bdensidad(es)?\b/.test(t);
+  detalle.push({item:'Menciona la palabra "densidad"', pts:c1?1:0, max:1, ok:c1});
+  if(c1) pts += 1;
+
+  const c2 = afirmaHunde(t) && (/\bmayor\b/.test(t) || /\bmas dens[oa]\b/.test(t));
+  detalle.push({item:'Explica que se hunde por tener mayor densidad', pts:c2?2:0, max:2, ok:c2});
+  if(c2) pts += 2;
+
+  const c3 = t.length > 30;
+  detalle.push({item:'Respuesta con buena redacción (más de 30 letras)', pts:c3?2:0, max:2, ok:c3});
+  if(c3) pts += 2;
+
+  return { pts: Math.min(pts, 5), max: 5, detalle };
+}
+
+function calificarAbierta2(texto){
+  const t = normalizar(texto);
+  const detalle = [];
+  let pts = 0;
+
+  const c1 = /\bmayor\b/.test(t) || /\bmas dens[oa]\b/.test(t) || /\bmas grande\b/.test(t);
+  detalle.push({item:'Dice que el líquido es más denso', pts:c1?2:0, max:2, ok:c1});
+  if(c1) pts += 2;
+
+  const c2 = /\b0\.24\b/.test(t) || /\bcorcho\b/.test(t);
+  detalle.push({item:'Usa el dato del corcho (0,24) o lo menciona', pts:c2?1:0, max:1, ok:c2});
+  if(c2) pts += 1;
+
+  const c3 = t.length > 30;
+  detalle.push({item:'Respuesta con buena redacción', pts:c3?2:0, max:2, ok:c3});
+  if(c3) pts += 2;
+
+  return { pts: Math.min(pts, 5), max: 5, detalle };
+}
+
+function calificarAbierta3(texto){
+  const t = normalizar(texto);
+  const detalle = [];
+  let pts = 0;
+
+  const c1 = /\bhierro\b/.test(t);
+  detalle.push({item:'Identifica el Hierro', pts:c1?2:0, max:2, ok:c1});
+  if(c1) pts += 2;
+
+  const c2 = /\bmayor densidad\b/.test(t) || /\bmas denso\b/.test(t) || /\b7\.9/.test(t) || /\b7,9/.test(t);
+  detalle.push({item:'Justifica con mayor densidad', pts:c2?2:0, max:2, ok:c2});
+  if(c2) pts += 2;
+
+  const c3 = t.length > 20;
+  detalle.push({item:'Respuesta con buena redacción', pts:c3?1:0, max:1, ok:c3});
+  if(c3) pts += 1;
+
+  return { pts: Math.min(pts, 5), max: 5, detalle };
+}
+
+function calificarAbierta4(texto){
+  const t = normalizar(texto);
+  const detalle = [];
+  let pts = 0;
+
+  const c1 = /\bdensidad\b/.test(t);
+  detalle.push({item:'Menciona la densidad', pts:c1?2:0, max:2, ok:c1});
+  if(c1) pts += 2;
+
+  const c2 = /\bflota\b/.test(t) || /\bhunde\b/.test(t);
+  detalle.push({item:'Relaciona densidad con flotar/hundirse', pts:c2?2:0, max:2, ok:c2});
+  if(c2) pts += 2;
+
+  const c3 = t.length > 50;
+  detalle.push({item:'Conclusión de 3 a 5 oraciones', pts:c3?1:0, max:1, ok:c3});
+  if(c3) pts += 1;
+
+  return { pts: Math.min(pts, 5), max: 5, detalle };
+}
+
+function calcularMC(data){
+  let score = 0;
+  QIDS.forEach(q => { if((data.mc && data.mc[q]) === KEYS[q]) score += MC_PTS; });
+  return score;
+}
+function calificarAuto(data){
+  const mc = calcularMC(data);
+  const ab1 = calificarAbierta1(data.abiertas?.A1 || '');
+  const ab2 = calificarAbierta2(data.abiertas?.A2 || '');
+  const ab3 = calificarAbierta3(data.abiertas?.A3 || '');
+  const ab4 = calificarAbierta4(data.abiertas?.A4 || '');
+  const abTotal = ab1.pts + ab2.pts + ab3.pts + ab4.pts;
+  return { mc, ab1, ab2, ab3, ab4, abTotal, total: mc + abTotal };
+}
+
+/* ============================================================
+   LECTURA / ESCRITURA
+   ============================================================ */
+function leerLocal(){
+  try{ const r = localStorage.getItem(LS_KEY); return r ? JSON.parse(r) : null; }
+  catch(e){ return null; }
+}
+function guardarLocal(d){ try{ localStorage.setItem(LS_KEY, JSON.stringify(d)); }catch(e){} }
+function leerArchivo(f){
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = e => res(e.target.result);
+    r.onerror = rej;
+    r.readAsText(f, 'utf-8');
+  });
+}
+function extraerJSON(txt){
+  const m = txt.match(/DATOS_JSON_INICIO\s*([\s\S]*?)\s*DATOS_JSON_FIN/);
+  if(!m) return null;
+  let s = m[1].trim().replace(/^<!--/, '').replace(/-->$/, '').trim();
+  try{ return JSON.parse(s); }
+  catch(e){
+    const a = s.indexOf('{'), b = s.lastIndexOf('}');
+    if(a>=0 && b>a){ try{ return JSON.parse(s.substring(a,b+1)); }catch(e2){ return null; } }
+    return null;
+  }
+}
+
+/* ============================================================
+   ROUTER
+   ============================================================ */
+function init(){
+  if(isTeacher){
+    activateTeacherMode();
+    return;
+  }
+  const data = leerLocal();
+  const tieneDatos = data && data.mc && Object.keys(data.mc).length > 0;
+  if(!tieneDatos){
+    $('viewLoad').classList.remove('hidden');
+    $('viewWork').classList.add('hidden');
+    initCargaRespaldo();
+  } else {
+    cargarTrabajo(data);
+  }
+}
+
+/* ============================================================
+   ACTIVAR MODO DOCENTE (Botón y URL)
+   ============================================================ */
+function activateTeacherMode(){
+  isTeacher = true;
+  $('pillModo').textContent = '👨‍🏫 Docente';
+  $('brandTitle').textContent = 'Panel de calificación';
+  
+  $('viewWork').classList.add('hidden');
+  $('viewLoad').classList.add('hidden');
+  $('viewTeacher').classList.remove('hidden');
+  
+  // Ocultar el botón de acceso docente una vez dentro
+  if($('btnAdmin')) $('btnAdmin').style.display = 'none';
+  
+  initTeacher();
+}
+
+function initCargaRespaldo(){
+  const procesarTexto = (txt) => {
+    const d = extraerJSON(txt);
+    if(!d){ alert('⚠️ No se pudo leer el archivo.\n\nAsegúrate de subir el respaldo de la Parte 1.'); return; }
+    if(!d.mc || Object.keys(d.mc).length === 0){
+      alert('⚠️ El archivo no contiene respuestas de opción múltiple.\n\nVerifica que sea el respaldo correcto.');
+      return;
+    }
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(d)); }catch(e){}
+    cargarTrabajo(d);
+  };
+  $('fileLoad').addEventListener('change', async e => {
+    const f = e.target.files[0]; if(!f) return;
+    const txt = await leerArchivo(f);
+    $('pasteLoad').value = txt;
+    procesarTexto(txt);
+  });
+  $('btnProcessLoad').addEventListener('click', () => {
+    const txt = $('pasteLoad').value.trim();
+    if(!txt){ alert('Primero sube un archivo o pega el contenido.'); return; }
+    procesarTexto(txt);
+  });
+}
+
+/* ============================================================
+   VISTA TRABAJO
+   ============================================================ */
+function cargarTrabajo(data){
+  $('viewLoad').classList.add('hidden');
+  $('viewWork').classList.remove('hidden');
+  const nombres = { amarillo:'🟡 Amarillo', verde:'🟢 Verde', azul:'🔵 Azul' };
+  const tagFlota = '<span class="summary-tag tag-flota">🟢 Flota</span>';
+  const tagHunde = '<span class="summary-tag tag-hunde">🔴 Se hunde</span>';
+
+  const nombresEst = [data.estudiante1, data.estudiante2, data.estudiante3].filter(Boolean).join(' / ');
+  $('summaryPareja').innerHTML = `
+    <div class="summary-row"><strong>Estudiantes:</strong> ${esc(nombresEst||'—')}</div>
+    <div class="summary-row"><strong>Curso:</strong> ${esc(data.curso||'—')} · <strong>Docente:</strong> ${esc(data.docente||'—')} · <strong>Fecha:</strong> ${esc(data.fecha||'—')} · <strong>Código:</strong> <code>${esc(data.codigo||'—')}</code></div>
+  `;
+  const filaExp = (exp) => ['amarillo','verde','azul'].map(b => {
+    const d = (exp||{})[b] || {};
+    const m = parseFloat(d.m), v = parseFloat(d.v);
+    const rho = (isFinite(m) && isFinite(v) && v>0) ? (m/v).toFixed(2) : '—';
+    const tag = d.est === 'flota' ? tagFlota : d.est === 'hunde' ? tagHunde : '—';
+    return `<tr><td><strong>${nombres[b]}</strong></td><td>${d.m||'—'}</td><td>${d.v||'—'}</td><td><strong>${rho}</strong></td><td>${tag}</td></tr>`;
+  }).join('');
+  $('sumA').innerHTML = filaExp(data.expA);
+  $('sumB').innerHTML = filaExp(data.expB);
+  
+  $('sumM').innerHTML = [1,2,3,4,5].map(i => {
+    const d = (data.expM||{})['M'+i] || {};
+    const m = parseFloat(d.m), v = parseFloat(d.v);
+    const rho = (isFinite(m) && isFinite(v) && v>0) ? (m/v).toFixed(2) : '—';
+    return `<tr><td><strong>📦 M${i}</strong></td><td>${d.m||'—'}</td><td>${d.v||'—'}</td><td><strong>${rho}</strong></td><td>${esc(d.mat||'—')}</td></tr>`;
+  }).join('');
+
+  if(data.abiertas){
+    $('abierta1').value = data.abiertas.A1 || '';
+    $('abierta2').value = data.abiertas.A2 || '';
+    $('abierta3').value = data.abiertas.A3 || '';
+    $('abierta4').value = data.abiertas.A4 || '';
+  }
+
+  // Actualizar correo destino final y asunto dinámico
+  const emailBox = $('emailDestinoFinal');
+  const asuntoBox = $('asuntoCorreo');
+  let correo = 'tu profesor (selecciona tu curso en la Parte 1)';
+  
+  if(data.curso === '6C'){
+    correo = 'jgarcia@cas.edu.co';
+  } else if(data.curso === '6A' || data.curso === '6B'){
+    correo = 'gramirez@cas.edu.co';
+  }
+
+  if(emailBox){
+    emailBox.innerHTML = `📧 <strong>Correo:</strong> <code>${correo}</code>`;
+  }
+
+  if(asuntoBox){
+    const nombres = [data.estudiante1, data.estudiante2, data.estudiante3].filter(Boolean).join(' y ');
+    asuntoBox.textContent = `Reporte Final Densidad - ${nombres} - ${data.codigo || ''}`;
+  }
+
+  const guardar = () => {
+    const d = leerLocal() || data;
+    d.abiertas = { 
+      A1: $('abierta1').value, 
+      A2: $('abierta2').value,
+      A3: $('abierta3').value,
+      A4: $('abierta4').value
+    };
+    d.estado = 'p2_done';
+    guardarLocal(d);
+  };
+  $('abierta1').addEventListener('input', guardar);
+  $('abierta2').addEventListener('input', guardar);
+  $('abierta3').addEventListener('input', guardar);
+  $('abierta4').addEventListener('input', guardar);
+  $('btnDownload').addEventListener('click', () => descargarReporte(data));
+}
+
+/* ---------- Generar reporte final ---------- */
+function generarReporte(data){
+  const hoy = new Date().toLocaleString('es-CO');
+  const nombres = { amarillo:'🟡 Amarillo', verde:'🟢 Verde', azul:'🔵 Azul' };
+  const filaExp = (exp) => ['amarillo','verde','azul'].map(b => {
+    const d = (exp||{})[b] || {};
+    const m = parseFloat(d.m), v = parseFloat(d.v);
+    const rho = (isFinite(m) && isFinite(v) && v>0) ? (m/v).toFixed(2) : '—';
+    const est = d.est === 'flota' ? '🟢 Flota' : d.est === 'hunde' ? '🔴 Se hunde' : '—';
+    return `| ${nombres[b]} | ${d.m||'—'} | ${d.v||'—'} | ${rho} | ${est} |`;
+  }).join('\n');
+  const filaMis = [1,2,3,4,5].map(i => {
+    const d = (data.expM||{})['M'+i] || {};
+    const m = parseFloat(d.m), v = parseFloat(d.v);
+    const rho = (isFinite(m) && isFinite(v) && v>0) ? (m/v).toFixed(2) : '—';
+    return `| 📦 M${i} | ${d.m||'—'} | ${d.v||'—'} | ${rho} | ${d.mat||'—'} |`;
+  }).join('\n');
+  const abiertas = data.abiertas || {};
+  const mc = data.mc || {};
+
+  const json = JSON.stringify({
+    codigo: data.codigo, estudiante1: data.estudiante1, estudiante2: data.estudiante2, estudiante3: data.estudiante3,
+    curso: data.curso, docente: data.docente, fecha: data.fecha,
+    mc, expA: data.expA, expB: data.expB, expM: data.expM,
+    abiertas: { 
+      A1: abiertas.A1 || '', 
+      A2: abiertas.A2 || '',
+      A3: abiertas.A3 || '',
+      A4: abiertas.A4 || ''
+    }
+  }, null, 2);
+
+  const nombresCompletos = [data.estudiante1, data.estudiante2, data.estudiante3].filter(Boolean).join(' / ');
+
+  return `# Reporte de Laboratorio · Flotar o Hundirse: La Densidad en Acción
+
+**Colegio Colombo Americano CAS · Bogotá, Colombia**
+**Física 6 · Grado Sexto · Cambridge Lower Secondary Checkpoint 9Pf.01**
+**Docentes: Gustavo Ramírez · Jhonny García**
+
+---
+
+## 👥 Datos del grupo
+
+- **Estudiantes:** ${nombresCompletos || '—'}
+- **Curso:** ${data.curso || '—'}
+- **Docente:** ${data.docente || '—'}
+- **Fecha:** ${data.fecha || '—'}
+- **Código:** \`${data.codigo || '—'}\`
+
+---
+
+## ⚗️ Experimento A · Misma masa
+
+| Bloque | Masa (kg) | Volumen (L) | Densidad (kg/L) | ¿Flota o se hunde? |
+|--------|-----------|-------------|-----------------|---------------------|
+${filaExp(data.expA)}
+
+## ⚗️ Experimento B · Mismo volumen
+
+| Bloque | Masa (kg) | Volumen (L) | Densidad (kg/L) | ¿Flota o se hunde? |
+|--------|-----------|-------------|-----------------|---------------------|
+${filaExp(data.expB)}
+
+## 🕵️ Bloques misteriosos
+
+| Bloque | Masa (kg) | Volumen (L) | Densidad (kg/L) | Material identificado |
+|--------|-----------|-------------|-----------------|------------------------|
+${filaMis}
+
+---
+
+## ✍️ Respuestas de opción múltiple (16 · 80 pts)
+
+${QIDS.map(q => `- **${q}:** ${mc[q] || '(sin responder)'}`).join('\n')}
+
+---
+
+## 📝 Preguntas abiertas (4 · 20 pts)
+
+### Pregunta 1
+> Explica por qué el bloque Azul se hunde en ambos experimentos. Usa la palabra "densidad".
+**Respuesta:**
+${abiertas.A1 || '(sin responder)'}
+
+### Pregunta 2
+> Si el corcho (0,24 kg/L) se hundió en un líquido, ¿qué sabemos de su densidad?
+**Respuesta:**
+${abiertas.A2 || '(sin responder)'}
+
+### Pregunta 3
+> 1L de Hierro vs 1L de Aluminio. ¿Cuál pesa más y por qué?
+**Respuesta:**
+${abiertas.A3 || '(sin responder)'}
+
+### Pregunta 4
+> Conclusión de 3 a 5 oraciones.
+**Respuesta:**
+${abiertas.A4 || '(sin responder)'}
+
+---
+
+## 📊 Resumen
+
+| Parte | Puntos máximos |
+|-------|-----------------|
+| Opción múltiple (16 × 5) | 80 |
+| Preguntas abiertas (4 × 5) | 20 |
+| **TOTAL** | **100** |
+
+*El docente calificará este reporte y te entregará tu nota.*
+
+---
+
+*Generado el ${hoy} · Laboratorio Virtual v4.5*
+
+<!-- DATOS_JSON_INICIO
+${json}
+DATOS_JSON_FIN -->
+`;
+}
+
+/* ---------- UTILIDADES DE DESCARGA UNIVERSAL ---------- */
+async function descargarArchivoUniversal(nombre, contenido, tipoMIME){
+  const blob = new Blob([contenido], { type: tipoMIME });
+  const archivo = new File([blob], nombre, { type: tipoMIME });
+  
+  if (isIOS && navigator.canShare && navigator.canShare({ files: [archivo] })) {
+    try {
+      await navigator.share({
+        files: [archivo],
+        title: nombre,
+        text: 'Aquí está mi reporte final del laboratorio de densidad.'
+      });
+      return;
+    } catch (err) {
+      if (err.name === 'AbortError') return;
+      console.warn('Share falló, intentando descarga directa...', err);
+    }
+  }
+  
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nombre;
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+function descargarReporte(data){
+  const d = leerLocal() || data;
+  if(!d.abiertas) d.abiertas = {};
+  d.abiertas = { 
+    A1: $('abierta1').value, 
+    A2: $('abierta2').value,
+    A3: $('abierta3').value,
+    A4: $('abierta4').value
+  };
+  
+  if(!d.abiertas.A1 || !d.abiertas.A2 || !d.abiertas.A3 || !d.abiertas.A4){
+    if(!confirm('⚠️ Aún no has respondido TODAS las preguntas abiertas.\n\n¿Descargar de todos modos?')) return;
+  }
+  
+  d.estado = 'p2_done';
+  guardarLocal(d);
+  const md = generarReporte(d);
+  const nombre = `reporte_final_densidad_${(d.estudiante1 || 'grupo').replace(/\s+/g,'_')}_${d.codigo}.txt`;
+  
+  descargarArchivoUniversal(nombre, md, 'text/plain;charset=utf-8');
+  
+  let correo = 'tu profesor';
+  if(d.curso === '6C'){ correo = 'jgarcia@cas.edu.co'; }
+  if(d.curso === '6A' || d.curso === '6B'){ correo = 'gramirez@cas.edu.co'; }
+
+  const nombresArr = [d.estudiante1, d.estudiante2, d.estudiante3].filter(Boolean);
+  const asunto = `Reporte Final Densidad - ${nombresArr.join(' y ')} - ${d.codigo}`;
+
+  setTimeout(() => {
+    alert(
+      '✅ ¡Reporte final descargado!\n\n' +
+      '📁 Archivo: ' + nombre + '\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+      '📧 ENVÍALO A TU PROFESOR:\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+      'Correo:  ' + correo + '\n\n' +
+      'Asunto:  ' + asunto + '\n\n' +
+      '━━━━━━━━━━━━━━━━━━━━━━━━\n\n' +
+      '⚠️ Adjunta el archivo antes de enviar.'
+    );
+  }, 800);
+}
+
+// Copiar reporte (útil para iPads)
+document.addEventListener('DOMContentLoaded', () => {
+  const btnCopy = document.getElementById('btnCopyReport');
+  if(btnCopy){
+    btnCopy.addEventListener('click', () => {
+      try {
+        const d = leerLocal();
+        if(!d) return;
+        d.abiertas = { 
+          A1: $('abierta1').value, 
+          A2: $('abierta2').value,
+          A3: $('abierta3').value,
+          A4: $('abierta4').value
+        };
+        const md = generarReporte(d);
+        
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(md).then(() => {
+            let correo = 'tu profesor';
+            if(d.curso === '6C') correo = 'jgarcia@cas.edu.co';
+            if(d.curso === '6A' || d.curso === '6B') correo = 'gramirez@cas.edu.co';
+            alert('✅ ¡Reporte copiado al portapapeles!\n\nAhora pégalo en un correo electrónico y envíalo a ' + correo);
+          }).catch(err => {
+            alert('⚠️ No se pudo copiar. Usa el botón verde de "Descargar".');
+          });
+        } else {
+          const textarea = document.createElement('textarea');
+          textarea.value = md;
+          textarea.style.position = 'fixed';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try {
+            document.execCommand('copy');
+            alert('✅ ¡Reporte copiado al portapapeles!\n\nPégalo en un correo electrónico y envíalo a tu profesor.');
+          } catch (err) {
+            alert('⚠️ No se pudo copiar. Usa el botón verde de "Descargar".');
+          }
+          document.body.removeChild(textarea);
+        }
+      } catch(err){
+        console.error(err);
+      }
+    });
+  }
+});
+
+/* ============================================================
+   MODO DOCENTE
+   ============================================================ */
+let teacherInitialized = false;
+function initTeacher(){
+  if(teacherInitialized) return;
+  teacherInitialized = true;
+
+  $('fileGrade').addEventListener('change', async e => {
+    const f = e.target.files[0]; if(!f) return;
+    const txt = await leerArchivo(f);
+    $('pasteGrade').value = txt;
+    procesar(txt);
+  });
+  $('btnProcess').addEventListener('click', () => {
+    const txt = $('pasteGrade').value.trim();
+    if(!txt){ alert('Sube un archivo o pega el contenido.'); return; }
+    procesar(txt);
+  });
+  $('btnNuevo').addEventListener('click', () => {
+    $('resultCard').classList.add('hidden');
+    $('uploadCard').classList.remove('hidden');
+    $('fileGrade').value = '';
+    $('pasteGrade').value = '';
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+  $('btnExportCSV').addEventListener('click', exportarCSV);
+
+  document.getElementById('btnCalibrar').addEventListener('click', () => {
+    const p = document.getElementById('calibPregunta').value;
+    const t = document.getElementById('calibTexto').value;
+    if(!t.trim()){ alert('Escribe una respuesta de ejemplo.'); return; }
+    let r;
+    if(p === '1') r = calificarAbierta1(t);
+    else if(p === '2') r = calificarAbierta2(t);
+    else if(p === '3') r = calificarAbierta3(t);
+    else r = calificarAbierta4(t);
+    
+    const color = r.pts >= 4 ? 'var(--g)' : r.pts >= 2 ? 'var(--a)' : 'var(--r)';
+    document.getElementById('calibResultado').innerHTML = `
+      <div style="background:#fff;border-radius:10px;padding:14px;border-left:4px solid ${color}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+          <strong style="font-size:1.05rem;color:${color}">${r.pts.toFixed(1)} / ${r.max} pts</strong>
+        </div>
+        ${r.detalle.map(d => `
+          <div style="display:flex;gap:8px;font-size:.85rem;padding:4px 0;border-bottom:1px solid #f3f4f6">
+            <span style="min-width:22px">${d.ok ? '✅' : '❌'}</span>
+            <span style="flex:1">${d.item}</span>
+            <strong style="min-width:50px;text-align:right;color:${d.ok?'var(--g)':'var(--mut)'}">${d.pts} pts</strong>
+          </div>
+        `).join('')}
+      </div>`;
+  });
+
+  document.getElementById('fileMultiple').addEventListener('change', e => {
+    const archivos = Array.from(e.target.files);
+    if(archivos.length) procesarMultiples(archivos);
+  });
+  document.getElementById('btnProcesarMulti').addEventListener('click', () => {
+    const txt = document.getElementById('pasteMulti').value.trim();
+    if(!txt){ alert('Pega el contenido separados por ---REPORTE---.'); return; }
+    const partes = txt.split('---REPORTE---').map(s => s.trim()).filter(Boolean);
+    if(!partes.length){ alert('No se encontraron reportes.'); return; }
+    const resultados = partes.map(p => {
+      const data = extraerJSON(p);
+      if(!data) return null;
+      const cal = calificarAuto(data);
+      return { data, ...cal };
+    }).filter(Boolean);
+    renderTablaMultiple(resultados);
+  });
+
+  renderStatsAjustes();
+}
+
+let currentData = null, currentMcScore = 0;
+let currentAb = { AB1: 0, AB2: 0, AB3: 0, AB4: 0 };
+
+function procesar(txt){
+  const data = extraerJSON(txt);
+  if(!data){ alert('⚠️ No se pudo leer el reporte.'); return; }
+  currentData = data;
+  renderResultado(data);
+  $('uploadCard').classList.add('hidden');
+  $('resultCard').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderResultado(data){
+  const nombresArr = [data.estudiante1, data.estudiante2, data.estudiante3].filter(Boolean);
+  $('resTitle').textContent = '📄 ' + nombresArr.join(' / ');
+  $('resMeta').innerHTML = `<strong>${esc(data.curso||'—')}</strong> · ${esc(data.docente||'—')} · ${esc(data.fecha||'—')} · Código: <code>${esc(data.codigo||'—')}</code>`;
+
+  const mc = data.mc || {};
+  currentMcScore = 0;
+  $('mcResults').innerHTML = QIDS.map(q => {
+    const stu = mc[q] || '';
+    const corr = KEYS[q];
+    const ok = stu === corr;
+    const pts = ok ? MC_PTS : 0;
+    currentMcScore += pts;
+    return `<div class="mc-row ${ok?'ok':'bad'}">
+      <span class="qid">${q}</span>
+      <span>Resp:</span><span class="ans">${stu||'—'}</span>
+      <span>Correcta:</span><span class="ans">${corr}</span>
+      <span class="pts">${ok?'✅':'❌'} ${pts}/${MC_PTS}</span>
+    </div>`;
+  }).join('');
+
+  const ab1 = calificarAbierta1(data.abiertas?.A1 || '');
+  const ab2 = calificarAbierta2(data.abiertas?.A2 || '');
+  const ab3 = calificarAbierta3(data.abiertas?.A3 || '');
+  const ab4 = calificarAbierta4(data.abiertas?.A4 || '');
+  
+  currentAb = { AB1: ab1.pts, AB2: ab2.pts, AB3: ab3.pts, AB4: ab4.pts };
+  const autoOriginal = { AB1: ab1.pts, AB2: ab2.pts, AB3: ab3.pts, AB4: ab4.pts };
+
+  $('openResults').innerHTML =
+    renderOpenAuto('AB1', 'Pregunta 1', data.abiertas?.A1 || '', ab1) +
+    renderOpenAuto('AB2', 'Pregunta 2', data.abiertas?.A2 || '', ab2) +
+    renderOpenAuto('AB3', 'Pregunta 3', data.abiertas?.A3 || '', ab3) +
+    renderOpenAuto('AB4', 'Pregunta 4', data.abiertas?.A4 || '', ab4);
+
+  actualizarTotal();
+
+  ['AB1','AB2','AB3','AB4'].forEach(id => {
+    const slider = document.querySelector(`#openResults input[data-id="${id}"]`);
+    if(!slider) return;
+    let lastSaved = autoOriginal[id];
+    let criterios;
+    if(id === 'AB1') criterios = ab1.detalle;
+    else if(id === 'AB2') criterios = ab2.detalle;
+    else if(id === 'AB3') criterios = ab3.detalle;
+    else criterios = ab4.detalle;
+
+    slider.addEventListener('input', () => {
+      const v = parseFloat(slider.value);
+      const lbl = document.querySelector(`[data-lbl="${id}"]`);
+      if(lbl) lbl.textContent = v.toFixed(1) + ' / 5';
+      currentAb[id] = v;
+      actualizarTotal();
+    });
+    slider.addEventListener('change', () => {
+      const v = parseFloat(slider.value);
+      const delta = v - lastSaved;
+      currentAb[id] = v;
+      actualizarTotal();
+      guardarGrade();
+      if(Math.abs(delta) >= 0.5){
+        if(slider._skipDialog){
+          guardarRegistroAjuste({ codigo: data.codigo, pregunta: id, auto_pts: lastSaved, manual_pts: v, delta, criterios: [], comentario: '' });
+        } else {
+          mostrarDialogoAjuste(id, lastSaved, v, data, criterios);
+        }
+      }
+      lastSaved = v;
+    });
+  });
+
+  $$('#openResults .btn-q').forEach(b => {
+    b.addEventListener('click', () => {
+      const r = document.querySelector(`#openResults input[data-id="${b.dataset.id}"]`);
+      if(r){
+        r._skipDialog = true;
+        r.value = b.dataset.v;
+        r.dispatchEvent(new Event('input'));
+        r.dispatchEvent(new Event('change'));
+        r._skipDialog = false;
+      }
+    });
+  });
+}
+
+function renderOpenAuto(id, titulo, respuesta, cal){
+  const detalle = cal.detalle.map(d => `
+    <div style="display:flex;gap:8px;font-size:.82rem;padding:3px 0">
+      <span style="min-width:20px">${d.ok ? '✅' : '❌'}</span>
+      <span style="flex:1">${d.item}</span>
+      <span style="font-weight:800;min-width:50px;text-align:right">${d.pts} pts</span>
+    </div>
+  `).join('');
+
+  return `<div class="open-grade">
+    <div class="q">${titulo} (5 pts)</div>
+    <div class="resp">${respuesta ? esc(respuesta) : '<em style="color:#9ca3af">(sin responder)</em>'}</div>
+    <details style="margin-top:10px">
+      <summary style="cursor:pointer;font-weight:800;color:var(--pd);font-size:.86rem;padding:6px">🤖 Rúbrica (${cal.pts} / 5 pts)</summary>
+      <div style="background:#f9fafb;border-radius:8px;padding:10px;margin-top:6px">${detalle}</div>
+    </details>
+    <div class="grade-row" style="margin-top:10px">
+      <span style="font-size:.82rem;font-weight:700">Ajustar:</span>
+      <button class="btn-q" data-id="${id}" data-v="0">0</button>
+      <button class="btn-q" data-id="${id}" data-v="2.5">50%</button>
+      <button class="btn-q" data-id="${id}" data-v="5">100%</button>
+      <input type="range" min="0" max="5" step="0.5" value="${cal.pts}" data-id="${id}">
+      <span class="pts-lbl" data-lbl="${id}">${cal.pts.toFixed(1)} / 5</span>
+    </div>
+  </div>`;
+}
+
+function actualizarTotal(){
+  const totalAb = currentAb.AB1 + currentAb.AB2 + currentAb.AB3 + currentAb.AB4;
+  const total = currentMcScore + totalAb;
+  $('scoreTotal').textContent = total.toFixed(1);
+  $('scoreFrac').textContent = `de 100 puntos (${currentMcScore.toFixed(1)} MC + ${totalAb.toFixed(1)} abiertas)`;
+}
+
+function leerGrades(){
+  try{ return JSON.parse(localStorage.getItem(LS_GRADES)) || {}; }
+  catch(e){ return {}; }
+}
+function guardarGrade(){
+  if(!currentData) return;
+  const g = leerGrades();
+  const totalAb = currentAb.AB1 + currentAb.AB2 + currentAb.AB3 + currentAb.AB4;
+  g[currentData.codigo] = { p1: currentAb.AB1, p2: currentAb.AB2, p3: currentAb.AB3, p4: currentAb.AB4, mc: currentMcScore, total: currentMcScore + totalAb, fecha: new Date().toISOString() };
+  localStorage.setItem(LS_GRADES, JSON.stringify(g));
+}
+function exportarCSV(){
+  const g = leerGrades();
+  const codigos = Object.keys(g);
+  if(!codigos.length){ alert('Aún no hay calificaciones guardadas.'); return; }
+  const filas = [['Codigo','MC (80)','P1 (5)','P2 (5)','P3 (5)','P4 (5)','Total (100)','Fecha']];
+  codigos.forEach(c => {
+    const r = g[c];
+    filas.push([c, r.mc.toFixed(1), r.p1.toFixed(1), r.p2.toFixed(1), r.p3.toFixed(1), r.p4.toFixed(1), r.total.toFixed(1), r.fecha]);
+  });
+  const csv = filas.map(f => f.map(x => '"' + String(x).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type:'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'calificaciones_densidad_' + hoyISO() + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+/* ============================================================
+   REGISTRO DE AJUSTES
+   ============================================================ */
+function leerAjustes(){
+  try{ return JSON.parse(localStorage.getItem(LS_AJUSTES)) || []; }
+  catch(e){ return []; }
+}
+function guardarRegistroAjuste(reg){
+  reg.timestamp = new Date().toISOString();
+  const todos = leerAjustes();
+  todos.push(reg);
+  try{ localStorage.setItem(LS_AJUSTES, JSON.stringify(todos)); }catch(e){}
+  renderStatsAjustes();
+}
+function mostrarToast(msg){
+  const t = document.createElement('div');
+  t.textContent = msg;
+  t.style.cssText = 'position:fixed;bottom:24px;right:24px;background:var(--g);color:#fff;padding:12px 20px;border-radius:10px;font-weight:700;font-size:.9rem;box-shadow:0 6px 20px rgba(0,0,0,.25);z-index:99999;transition:opacity .3s';
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; }, 2500);
+  setTimeout(() => t.remove(), 3000);
+}
+
+function mostrarDialogoAjuste(pregunta, auto, manual, data, criterios){
+  const delta = manual - auto;
+  const esSubida = delta > 0;
+  const criteriosMostrar = (criterios || []).filter(c => c.max > 0);
+
+  const dialog = document.createElement('dialog');
+  dialog.style.cssText = 'border:none;border-radius:16px;padding:0;max-width:540px;width:92vw;box-shadow:0 12px 40px rgba(0,0,0,.25);overflow:hidden';
+
+  dialog.innerHTML = `
+    <div style="background:linear-gradient(135deg,var(--pd),var(--p));color:#fff;padding:16px 20px">
+      <h3 style="margin:0;font-size:1.02rem">📝 Registrar ajuste manual</h3>
+      <p style="margin:4px 0 0;font-size:.82rem;opacity:.92">
+        Pregunta ${pregunta.replace('AB','')} · Auto: <strong>${auto.toFixed(1)}</strong> → Manual: <strong>${manual.toFixed(1)}</strong>
+        <span style="color:${esSubida ? '#86efac' : '#fca5a5'};font-weight:800"> (${esSubida ? '+' : ''}${delta.toFixed(1)})</span>
+      </p>
+    </div>
+    <div style="padding:18px 20px">
+      ${criteriosMostrar.length > 0 ? `
+        <p style="font-size:.85rem;margin:0 0 10px;color:#374151">
+          ${esSubida ? '🤔 El sistema calificó <strong>por debajo</strong>. Marca lo que <strong>debería sumar</strong>:'
+                     : '🤔 El sistema calificó <strong>por encima</strong>. Marca lo que <strong>NO debió sumar</strong>:'}
+        </p>
+        <div style="max-height:220px;overflow-y:auto;border:1px solid var(--ln);border-radius:8px;padding:6px;margin-bottom:12px">
+          ${criteriosMostrar.map((c, i) => {
+            const sospechoso = (esSubida && !c.ok) || (!esSubida && c.ok);
+            return `<label style="display:flex;gap:8px;padding:7px 8px;border-radius:6px;cursor:pointer;font-size:.85rem;background:${sospechoso ? '#fef3c7' : '#fafbfc'};margin:3px 0">
+              <input type="checkbox" value="${i}" style="margin-top:3px;accent-color:var(--p)">
+              <span>${c.ok ? '✅' : '❌'} ${esc(c.item)} <strong style="color:${c.ok ? 'var(--g)' : 'var(--mut)'}">(${c.pts}/${c.max})</strong></span>
+            </label>`;
+          }).join('')}
+        </div>
+      ` : '<p style="font-size:.85rem;color:var(--mut);margin:0 0 12px">No hay criterios detallados.</p>'}
+      <label style="display:block;font-weight:700;font-size:.82rem;margin:6px 0 4px;color:#374151">Comentario (opcional)</label>
+      <textarea class="dlg-ajuste-comentario" placeholder="Ej: el estudiante usó un sinónimo válido" style="width:100%;min-height:60px;padding:8px 10px;border:2px solid var(--ln);border-radius:8px;font-family:inherit;font-size:.85rem;resize:vertical"></textarea>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+        <button class="dlg-ajuste-omitir" style="padding:8px 14px;border-radius:8px;border:2px solid var(--ln);background:#fff;font-weight:700;cursor:pointer;font-size:.84rem">Omitir</button>
+        <button class="dlg-ajuste-guardar" style="padding:8px 16px;border-radius:8px;border:none;background:var(--p);color:#fff;font-weight:800;cursor:pointer;font-size:.84rem">💾 Guardar</button>
+      </div>
+    </div>`;
+  document.body.appendChild(dialog);
+  dialog.showModal();
+
+  const cerrar = () => { dialog.close(); dialog.remove(); };
+  const comentario = () => dialog.querySelector('.dlg-ajuste-comentario').value.trim();
+
+  dialog.querySelector('.dlg-ajuste-omitir').addEventListener('click', () => {
+    guardarRegistroAjuste({ codigo:data.codigo, pregunta, auto_pts:auto, manual_pts:manual, delta, criterios:[], comentario:comentario() });
+    cerrar(); mostrarToast('✅ Ajuste registrado');
+  });
+  dialog.querySelector('.dlg-ajuste-guardar').addEventListener('click', () => {
+    const seleccionados = Array.from(dialog.querySelectorAll('input[type=checkbox]:checked')).map(c => parseInt(c.value, 10)).map(i => criteriosMostrar[i].item);
+    guardarRegistroAjuste({ codigo:data.codigo, pregunta, auto_pts:auto, manual_pts:manual, delta, criterios:seleccionados, comentario:comentario() });
+    cerrar(); mostrarToast('✅ Ajuste guardado');
+  });
+  dialog.addEventListener('cancel', e => {
+    e.preventDefault();
+    guardarRegistroAjuste({ codigo:data.codigo, pregunta, auto_pts:auto, manual_pts:manual, delta, criterios:[], comentario:'' });
+    cerrar();
+  });
+}
+
+function renderStatsAjustes(){
+  const cont = document.getElementById('statsAjustes');
+  if(!cont) return;
+  const ajustes = leerAjustes();
+  if(!ajustes.length){
+    cont.innerHTML = `<div style="text-align:center;padding:30px 20px;color:var(--mut)"><p>No hay ajustes registrados.</p></div>`;
+    return;
+  }
+  let html = '';
+  const porPregunta = { AB1: [], AB2: [], AB3: [], AB4: [] };
+  ajustes.forEach(a => { (porPregunta[a.pregunta] ||= []).push(a); });
+  
+  Object.keys(porPregunta).forEach(p => {
+    const lista = porPregunta[p];
+    if(!lista.length) return;
+    const sumaDelta = lista.reduce((s, a) => s + a.delta, 0);
+    const prom = sumaDelta / lista.length;
+    const color = Math.abs(prom) > 0.5 ? 'var(--r)' : Math.abs(prom) > 0.1 ? 'var(--a)' : 'var(--g)';
+    html += `<div style="margin-bottom:10px;padding:10px;background:#fafbfc;border-radius:10px;border-left:4px solid ${color}">
+      <strong>Pregunta ${p.replace('AB','')}</strong>: ${lista.length} ajustes. Delta promedio: <strong style="color:${color}">${prom > 0 ? '+' : ''}${prom.toFixed(1)}</strong>
+    </div>`;
+  });
+
+  html += `<div class="btn-row" style="margin-top:16px">
+    <button class="btn" id="btnExportAjustes" style="background:var(--p)">📥 Exportar historial</button>
+    <button class="btn" id="btnResetAjustes" style="background:var(--r)">🗑️ Borrar historial</button>
+  </div>`;
+  cont.innerHTML = html;
+  
+  document.getElementById('btnExportAjustes')?.addEventListener('click', exportarAjustes);
+  document.getElementById('btnResetAjustes')?.addEventListener('click', () => {
+    if(confirm('¿Borrar todo el historial?')){ localStorage.removeItem(LS_AJUSTES); renderStatsAjustes(); }
+  });
+}
+function exportarAjustes(){
+  const ajustes = leerAjustes();
+  if(!ajustes.length){ alert('No hay ajustes.'); return; }
+  const filas = [['Timestamp','Codigo','Pregunta','Auto','Manual','Delta','Criterios','Comentario']];
+  ajustes.forEach(a => {
+    filas.push([a.timestamp, a.codigo, a.pregunta, a.auto_pts.toFixed(1), a.manual_pts.toFixed(1), a.delta.toFixed(1), (a.criterios||[]).join(' | '), a.comentario||'']);
+  });
+  const csv = filas.map(f => f.map(x => '"' + String(x).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type:'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'ajustes_calibracion_' + hoyISO() + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+/* ============================================================
+   CARGA MÚLTIPLE
+   ============================================================ */
+let multiResultados = [];
+
+async function procesarMultiples(archivos){
+  multiResultados = [];
+  const total = archivos.length;
+  let procesados = 0;
+  const barra = document.getElementById('barraMulti');
+  if(barra){ barra.textContent = `Procesando 0 / ${total}…`; }
+  for(const f of archivos){
+    try{
+      const txt = await leerArchivo(f);
+      const data = extraerJSON(txt);
+      if(data && data.codigo){
+        const cal = calificarAuto(data);
+        multiResultados.push({ data, ...cal, archivo: f.name });
+      }
+    }catch(e){ console.warn('Error con', f.name, e); }
+    procesados++;
+    if(barra){ barra.textContent = `Procesando ${procesados} / ${total}…`; }
+  }
+  if(barra){ barra.textContent = `✅ Procesados ${multiResultados.length} de ${total}`; }
+  renderTablaMultiple(multiResultados);
+}
+
+function renderTablaMultiple(resultados){
+  const cont = document.getElementById('multiResultados');
+  if(!cont) return;
+  if(!resultados.length){
+    cont.innerHTML = '<div class="alert">No se pudo procesar ningún reporte.</div>';
+    return;
+  }
+  const filas = resultados.map((r, i) => {
+    const nombresArr = [r.data.estudiante1, r.data.estudiante2, r.data.estudiante3].filter(Boolean);
+    return `
+    <tr>
+      <td><strong>${esc(r.data.codigo || '—')}</strong></td>
+      <td>${esc(r.data.curso || '—')}</td>
+      <td>${esc(nombresArr.join(' / ') || '—')}</td>
+      <td style="text-align:center">${r.mc.toFixed(1)} / 80</td>
+      <td style="text-align:center">${r.abTotal.toFixed(1)} / 20</td>
+      <td style="text-align:center;font-weight:900;color:var(--pd)">${r.total.toFixed(1)} / 100</td>
+      <td>
+        <button class="btn-q" data-idx="${i}" data-act="ver">👁️ Ver</button>
+      </td>
+    </tr>
+  `}).join('');
+
+  cont.innerHTML = `
+    <div class="card" style="margin-top:14px">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:10px">
+        <h3 style="margin:0;color:var(--pd)">📊 Resultados (${resultados.length})</h3>
+        <button class="btn" id="btnExportMulti" style="width:auto;padding:8px 16px;font-size:.85rem">📥 Exportar CSV</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="tbl" style="min-width:800px">
+          <thead><tr><th>Código</th><th>Curso</th><th>Estudiantes</th><th>MC</th><th>Abiertas</th><th>Total</th><th>Acciones</th></tr></thead>
+          <tbody>${filas}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  cont.querySelectorAll('button[data-act]').forEach(b => {
+    b.addEventListener('click', () => {
+      const r = resultados[parseInt(b.dataset.idx)];
+      if(b.dataset.act === 'ver') verDetalleMulti(r);
+    });
+  });
+  document.getElementById('btnExportMulti')?.addEventListener('click', exportarMultiCSV);
+}
+
+function verDetalleMulti(r){
+  currentData = r.data;
+  renderResultado(r.data);
+  $('uploadCard').classList.add('hidden');
+  $('resultCard').classList.remove('hidden');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function exportarMultiCSV(){
+  if(!multiResultados.length){ alert('No hay resultados.'); return; }
+  const filas = [['Codigo','Curso','Docente','Estudiantes','Fecha','MC_80','Abiertas_20','Total_100']];
+  multiResultados.forEach(r => {
+    const nombresArr = [r.data.estudiante1, r.data.estudiante2, r.data.estudiante3].filter(Boolean);
+    filas.push([r.data.codigo||'', r.data.curso||'', r.data.docente||'', nombresArr.join(' / '), r.data.fecha||'', r.mc.toFixed(1), r.abTotal.toFixed(1), r.total.toFixed(1)]);
+  });
+  const csv = filas.map(f => f.map(x => '"' + String(x).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], { type:'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'calificaciones_multiples_' + hoyISO() + '.csv';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Botón de admin con contraseña
+  const btnAdmin = document.getElementById('btnAdmin');
+  if(btnAdmin){
+    btnAdmin.addEventListener('click', () => {
+      const pass = prompt('🔐 Ingresa la contraseña del docente:');
+      if(pass === 'DOCENTE2025'){
+        activateTeacherMode();
+        window.scrollTo({top:0,behavior:'smooth'});
+      } else if(pass !== null) {
+        alert('❌ Contraseña incorrecta.');
+      }
+    });
+  }
+  
+  init();
+});
+})();
+</script>
+</body>
+</html>
